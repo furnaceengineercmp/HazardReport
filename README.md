@@ -1,0 +1,2 @@
+# HazardReport
+FurnaceHazardReport
