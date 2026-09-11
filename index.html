@@ -16,6 +16,11 @@
     --green:#39c26a; --red:#ff5470;
   }
   *{box-sizing:border-box;}
+  html,body{margin:0;}
+  .hazard-top{
+    height:8px;
+    background: repeating-linear-gradient(135deg, var(--gold) 0 22px, #111 22px 44px);
+  }
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family:'Segoe UI',Roboto,Arial,sans-serif;
@@ -230,6 +235,7 @@
 </style>
 </head>
 <body>
+<div class="hazard-top"></div>
 <div class="wrap">
 
   <header class="appbar">
@@ -847,6 +853,11 @@ function showScreen(id){
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
   window.scrollTo(0,0);
+  // PENTING: kanvas tanda tangan diukur pakai getBoundingClientRect() saat
+  // dibuat. Kalau panelnya masih display:none waktu itu, ukurannya kebaca
+  // 0x0 sehingga tidak bisa digambar sama sekali. Memicu ulang resize
+  // (setelah browser selesai menampilkan panelnya) memperbaiki ini.
+  requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
 }
 document.querySelectorAll('[data-back-to]').forEach(btn => {
   btn.addEventListener('click', () => showScreen(btn.getAttribute('data-back-to')));
