@@ -6,18 +6,20 @@
 <title>Aplikasi HSE — Ceria Metalindo Prima</title>
 <style>
   :root{
+    color-scheme: light;
     --bg:#f4f5f7; --paper:#ffffff; --ink:#14171a; --ink-soft:#5b6470;
     --line:#e2e5ea; --accent:#d2001c; --accent-soft:#ffe1e5; --gold:#ffc629;
     --green:#1a7f37; --red:#c81e3a;
   }
   [data-theme="dark"]{
+    color-scheme: dark;
     --bg:#0f1115; --paper:#171a20; --ink:#eef1f5; --ink-soft:#9aa4b2;
     --line:#2a2f38; --accent:#ff4d61; --accent-soft:#3a1418; --gold:#ffd85c;
     --green:#39c26a; --red:#ff5470;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;}
-  button{color:inherit; font:inherit;} /* reset supaya tombol ikut warna tema (fix teks hitam di dark mode) */
+  button{color:inherit; font:inherit;}
   .hazard-top{
     height:8px;
     background: repeating-linear-gradient(135deg, var(--gold) 0 22px, #111 22px 44px);
@@ -85,7 +87,6 @@
   .error-box.show{display:block;}
   .hint{font-size:.78rem; color:var(--ink-soft); margin-top:-8px; margin-bottom:14px;}
 
-  /* Menu cards */
   .menu-grid{display:grid; gap:12px;}
   .menu-item{
     display:flex; align-items:center; gap:14px; background:var(--paper);
@@ -107,7 +108,6 @@
   .menu-user b{display:block; font-size:1.02rem;}
   .menu-user span{font-size:.78rem; color:var(--ink-soft);}
 
-  /* Chip checkboxes (reused across forms) */
   .chip-group{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;}
   .chip{
     border:1.5px solid var(--line); border-radius:999px; padding:9px 14px;
@@ -125,7 +125,6 @@
   .other-input{display:none; margin-top:6px;}
   .other-input.show{display:block;}
 
-  /* Signature pad */
   .sig-card{border:1.5px dashed var(--line); border-radius:12px; padding:12px; background:var(--paper);}
   .sig-card h4{margin:0 0 8px; font-size:.85rem;}
   canvas.sig-canvas{
@@ -136,7 +135,6 @@
   .sig-actions button{border:none; background:none; color:var(--red); font-size:.78rem; font-weight:600; cursor:pointer; padding:4px 0;}
   .sig-status{font-size:.72rem; color:var(--ink-soft);}
 
-  /* Photo upload */
   .photo-card{border:1.5px dashed var(--line); border-radius:12px; padding:12px; background:var(--paper);}
   .photo-card h4{margin:0 0 8px; font-size:.85rem;}
   .photo-drop{
@@ -150,7 +148,6 @@
   .photo-status{font-size:.72rem; color:var(--ink-soft);}
   input[type=file]{display:none;}
 
-  /* PPE checklist */
   .ppe-item{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     border:1.5px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px;
@@ -188,7 +185,6 @@
   }
   .topbar-back svg{width:16px; height:16px;}
 
-  /* ==== Kompatibilitas markup form lama (Hazard Report) ==== */
   .section{padding:20px 0; border-bottom:1px dashed var(--line);}
   .section:last-of-type{border-bottom:none;}
   .section h2{font-size:1rem; letter-spacing:.04em; margin:0 0 4px; color:var(--ink); font-family:'Oswald',sans-serif;}
@@ -234,9 +230,82 @@
     font-size:.76rem; color:var(--ink-soft); padding:10px;
     background:repeating-linear-gradient(135deg, transparent 0 10px, var(--bg) 10px 20px);
   }
+
+  /* ===================== DASHBOARD ===================== */
+  .dash-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .dash-tab{
+    border:1.5px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    border-radius:999px; padding:8px 14px; font-size:.82rem; font-weight:600; cursor:pointer;
+  }
+  .dash-tab.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .dash-pane{display:none;}
+  .dash-pane.active{display:block;}
+  .dash-loading{text-align:center; padding:30px 10px; color:var(--ink-soft); font-size:.85rem;}
+  .kpi-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px;}
+  @media (max-width:480px){ .kpi-grid{grid-template-columns:1fr 1fr;} }
+  .kpi-card{border:1.5px solid var(--line); border-radius:12px; padding:14px; background:var(--paper);}
+  .kpi-card .kpi-label{font-size:.72rem; color:var(--ink-soft); font-weight:600; text-transform:uppercase; letter-spacing:.03em;}
+  .kpi-card .kpi-value{font-size:1.6rem; font-weight:700; margin-top:4px;}
+  .recap-table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin-bottom:18px;}
+  table.recap-table{width:100%; border-collapse:collapse; font-size:.8rem; white-space:nowrap;}
+  table.recap-table th, table.recap-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line);}
+  table.recap-table th{background:var(--bg); font-weight:700; font-size:.72rem; text-transform:uppercase; color:var(--ink-soft);}
+  table.recap-table tr:last-child td{border-bottom:none;}
+  table.recap-table td.num{text-align:center; font-weight:600;}
+  table.recap-table tr.total-row td{font-weight:700; background:var(--accent-soft);}
+  .rank-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+  @media (max-width:560px){ .rank-grid{grid-template-columns:1fr;} }
+  .rank-card{border:1.5px solid var(--line); border-radius:12px; padding:14px; background:var(--paper);}
+  .rank-card h4{margin:0 0 10px; font-size:.82rem; display:flex; align-items:center; gap:6px;}
+  .rank-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px;}
+  .rank-list li{display:flex; justify-content:space-between; align-items:center; font-size:.82rem; padding:6px 10px; border-radius:8px; background:var(--bg);}
+  .rank-list li b{font-weight:700; color:var(--accent);}
+  .rank-empty{font-size:.78rem; color:var(--ink-soft); padding:8px 0;}
+  .target-card{border:1.5px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px; background:var(--paper);}
+  .target-card .t-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .target-card .t-head b{font-size:.88rem;}
+  .target-card .t-head span{font-size:.78rem; color:var(--ink-soft);}
+  .progress-bar{height:9px; border-radius:99px; background:var(--bg); overflow:hidden; margin-bottom:4px;}
+  .progress-bar > div{height:100%; background:var(--green); border-radius:99px; transition:width .3s;}
+  .progress-bar.over > div{background:var(--accent);}
+  .target-input-row{display:flex; align-items:center; gap:8px; margin-top:8px;}
+  .target-input-row input{margin-bottom:0; width:90px; flex:none;}
+  .target-input-row button{width:auto; padding:9px 14px; flex:none;}
+  .lookup-card{display:flex; gap:8px; margin-bottom:16px;}
+  .lookup-card input{margin-bottom:0; flex:1;}
+  .lookup-card button{width:auto; padding:0 18px; flex:none;}
+  .lookup-result{border:1.5px solid var(--line); border-radius:12px; padding:16px; display:none;}
+  .lookup-result.show{display:block;}
+  .lookup-result .lr-name{font-size:1.1rem; font-weight:700;}
+  .lookup-result .lr-meta{font-size:.8rem; color:var(--ink-soft); margin-bottom:12px;}
+  .filters-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+  .filters-row select{margin-bottom:0; width:auto; flex:1; min-width:140px;}
+  .reports-table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px;}
+  table.reports-table{width:100%; border-collapse:collapse; font-size:.8rem;}
+  table.reports-table th, table.reports-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.reports-table th{background:var(--bg); font-weight:700; font-size:.72rem; text-transform:uppercase; color:var(--ink-soft); white-space:nowrap;}
+  table.reports-table tr:last-child td{border-bottom:none;}
+  .report-thumb{width:52px; height:52px; border-radius:8px; object-fit:cover; cursor:pointer; border:1px solid var(--line); display:block;}
+  .report-thumb-empty{width:52px; height:52px; border-radius:8px; border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--ink-soft); text-align:center;}
+  .report-photo-actions{display:flex; gap:6px; margin-top:6px;}
+  .report-photo-actions button{width:auto; padding:4px 8px; font-size:.68rem; border-radius:6px; border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer;}
+  .report-photo-actions button.danger{color:var(--red); border-color:var(--red);}
+  .badge-type{display:inline-block; padding:3px 9px; border-radius:999px; font-size:.68rem; font-weight:700; background:var(--accent-soft); color:var(--accent); white-space:nowrap;}
+  .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; align-items:center; justify-content:center; z-index:999; padding:20px;}
+  .lightbox.show{display:flex;}
+  .lightbox img{max-width:100%; max-height:90vh; border-radius:10px;}
+  .lightbox-close{position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%; background:#fff; border:none; font-size:1.2rem; cursor:pointer;}
+  .dash-note{font-size:.76rem; color:var(--ink-soft); margin:0 0 14px; font-style:italic;}
 </style>
 </head>
 <body>
+<script>
+  try{
+    if (localStorage.getItem('hseAppTheme') === 'dark') {
+      document.body.setAttribute('data-theme','dark');
+    }
+  }catch(e){}
+</script>
 <div class="hazard-top"></div>
 <div class="wrap">
 
@@ -855,6 +924,105 @@
     </div>
   </section>
 
+  <!-- ===================== DASHBOARD ===================== -->
+  <section class="screen" id="screen-dashboard">
+    <div class="topbar-back" data-back-to="screen-menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      Kembali ke Menu
+    </div>
+    <div class="card">
+      <h1 style="margin-top:0;">DASHBOARD<span class="en">Rekap &amp; performa laporan</span></h1>
+      <p class="dash-note">Data diambil langsung dari sheet Data Hazard / Data Safety Talk / Data Audit SOP / Data Audit PPE.</p>
+
+      <div class="dash-tabs">
+        <button type="button" class="dash-tab active" data-pane="dash-pane-rekap">Rekap Total</button>
+        <button type="button" class="dash-tab" data-pane="dash-pane-target">Target &amp; Capaian</button>
+        <button type="button" class="dash-tab" data-pane="dash-pane-rank">Top &amp; Bottom 3</button>
+        <button type="button" class="dash-tab" data-pane="dash-pane-person">Rapor Per Orang</button>
+        <button type="button" class="dash-tab" data-pane="dash-pane-reports">Daftar Laporan</button>
+      </div>
+
+      <div id="dashLoading" class="dash-loading">Memuat data dashboard...</div>
+      <div id="dashError" class="error-box"></div>
+      <div id="dashContent" style="display:none;">
+
+        <!-- PANE: Rekap Total -->
+        <div class="dash-pane active" id="dash-pane-rekap">
+          <div class="kpi-grid" id="dashKpiGrid"></div>
+          <div class="recap-table-wrap">
+            <table class="recap-table">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Hazard Report</th>
+                  <th>Safety Talk</th>
+                  <th>Audit SOP</th>
+                  <th>Audit PPE</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="dashRecapBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANE: Target & Capaian -->
+        <div class="dash-pane" id="dash-pane-target">
+          <p class="hint">Target tahunan per role. <span id="dashTargetEditNote"></span></p>
+          <div id="dashTargetList"></div>
+        </div>
+
+        <!-- PANE: Top & Bottom 3 -->
+        <div class="dash-pane" id="dash-pane-rank">
+          <div class="rank-grid" id="dashRankGrid"></div>
+        </div>
+
+        <!-- PANE: Rapor Per Orang -->
+        <div class="dash-pane" id="dash-pane-person">
+          <div class="lookup-card">
+            <input type="text" id="dashLookupInput" placeholder="Ketik Nama atau ID Badges...">
+            <button type="button" class="btn btn-primary" id="dashLookupBtn">Cari</button>
+          </div>
+          <div class="lookup-result" id="dashLookupResult"></div>
+        </div>
+
+        <!-- PANE: Daftar Laporan -->
+        <div class="dash-pane" id="dash-pane-reports">
+          <div class="filters-row">
+            <select id="dashFilterType">
+              <option value="">Semua Jenis Laporan</option>
+              <option value="Hazard Report">Hazard Report</option>
+              <option value="Safety Talk">Safety Talk</option>
+              <option value="Audit SOP">Audit SOP</option>
+              <option value="Audit PPE">Audit PPE</option>
+            </select>
+            <select id="dashFilterLimit">
+              <option value="25">Tampilkan 25 baris</option>
+              <option value="50">Tampilkan 50 baris</option>
+              <option value="100">Tampilkan 100 baris</option>
+              <option value="0">Tampilkan semua</option>
+            </select>
+          </div>
+          <div class="reports-table-wrap">
+            <table class="reports-table">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Laporan Apa</th>
+                  <th>Judul Laporan</th>
+                  <th>Tanggal</th>
+                  <th>Foto</th>
+                </tr>
+              </thead>
+              <tbody id="dashReportsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== SUKSES ===================== -->
   <section class="screen" id="screen-success">
     <div class="card success-box">
@@ -868,6 +1036,11 @@
   </section>
 
   <footer class="app-footer">Ceria Metalindo Prima &middot; Process Engineer</footer>
+</div>
+
+<div class="lightbox" id="photoLightbox">
+  <button class="lightbox-close" id="photoLightboxClose" type="button">&times;</button>
+  <img id="photoLightboxImg" src="" alt="Foto bukti">
 </div>
 
 <script>
@@ -893,8 +1066,6 @@ const SESSION_KEY = 'hseAppSession';
 /* ============================================================================
  *  NAVIGASI ANTAR LAYAR
  * ========================================================================= */
-// Nama & ID Badges di form Hazard Report diambil otomatis dari akun yang
-// sedang login — tidak perlu diketik ulang tiap kali lapor.
 function populateHazardReporterFields(){
   const session = getSession();
   if (!session) return;
@@ -910,10 +1081,6 @@ function showScreen(id){
   if (el) el.classList.add('active');
   if (id === 'screen-hazard') populateHazardReporterFields();
   window.scrollTo(0,0);
-  // PENTING: kanvas tanda tangan diukur pakai getBoundingClientRect() saat
-  // dibuat. Kalau panelnya masih display:none waktu itu, ukurannya kebaca
-  // 0x0 sehingga tidak bisa digambar sama sekali. Memicu ulang resize
-  // (setelah browser selesai menampilkan panelnya) memperbaiki ini.
   requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
 }
 document.querySelectorAll('[data-back-to]').forEach(btn => {
@@ -938,11 +1105,20 @@ function clearSession(){
 function getDeviceInfo(){
   return navigator.userAgent || '';
 }
+function canManageDashboard(){
+  const session = getSession();
+  if (!session) return false;
+  const r = String(session.role || '').trim().toLowerCase();
+  return r === 'manager' || r === 'engineer';
+}
 
 /* ============================================================================
  *  PEMANGGILAN API KE APPS SCRIPT
  * ========================================================================= */
 async function callApi(payload){
+  const session = getSession();
+  if (session && session.token && !payload.token) payload.token = session.token;
+  if (session && session.username && !payload.username) payload.username = session.username;
   const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
   const raw = await res.text();
   let data;
@@ -1031,8 +1207,6 @@ function createSignaturePad(canvasEl, clearBtnEl, statusEl){
   }
   if (clearBtnEl) clearBtnEl.addEventListener('click', clear);
 
-  // Kompres sebelum dikirim — lebar maks ~480px + kualitas JPEG diturunkan,
-  // supaya proses simpan & muncul di Google Sheets lebih cepat.
   function getDataUrl(maxWidth){
     maxWidth = maxWidth || 480;
     const scale = Math.min(1, maxWidth / canvasEl.width);
@@ -1098,8 +1272,6 @@ function createPhotoUpload(inputEl, dropEl, placeholderEl, clearBtnEl, statusEl)
     });
   }
 
-  // Dikecilkan ke lebar maksimum ~1000px + kualitas JPEG diturunkan supaya
-  // tetap jelas tapi jauh lebih ringan & cepat diproses.
   function compress(img, maxWidth){
     maxWidth = maxWidth || 1000;
     const scale = Math.min(1, maxWidth / img.naturalWidth);
@@ -1201,8 +1373,6 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   const btn = document.getElementById('loginBtn');
   btn.disabled = true; btn.textContent = 'Memproses...';
   try{
-    // username tetap dikirim untuk kompatibilitas API lama.
-    // Backend baru harus membaca loginType + identifier untuk pencarian akun.
     const data = await callApi({
       action:'login',
       username: loginType === 'username' ? identifier : '',
@@ -1291,29 +1461,30 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 /* ============================================================================
  *  MENU (berbeda tergantung role)
- *  Asumsi (lihat catatan di Code.gs):
- *  - Manager & Superintendent -> Field Safety Audit, Safety Talk
- *  - Supervisor -> Safety Talk, Audit SOP, Audit PPE
- *  - role lain (mis. Engineer) -> default Field Safety Audit saja
  * ========================================================================= */
 const MENU_ICONS = {
   hazard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L2.5 18a1.5 1.5 0 0 0 1.3 2.3h16.4a1.5 1.5 0 0 0 1.3-2.3L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z"/></svg>',
   talk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>',
   sop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
-  ppe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4Z"/></svg>'
+  ppe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4Z"/></svg>',
+  dash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>'
 };
 const MENU_DEFS = {
   hazard: { title:'Field Safety Audit', sub:'Hazard Report', icon:MENU_ICONS.hazard, screen:'screen-hazard' },
   talk:   { title:'Safety Talk', sub:'Toolbox meeting', icon:MENU_ICONS.talk, screen:'screen-safetytalk' },
   sop:    { title:'Audit SOP', sub:'Kepatuhan prosedur kerja', icon:MENU_ICONS.sop, screen:'screen-auditsop' },
-  ppe:    { title:'Audit PPE', sub:'Kepatuhan alat pelindung diri', icon:MENU_ICONS.ppe, screen:'screen-auditppe' }
+  ppe:    { title:'Audit PPE', sub:'Kepatuhan alat pelindung diri', icon:MENU_ICONS.ppe, screen:'screen-auditppe' },
+  dash:   { title:'Dashboard', sub:'Rekap & performa laporan', icon:MENU_ICONS.dash, screen:'screen-dashboard' }
 };
 
 function menuKeysForRole(role){
   const r = String(role || '').trim().toLowerCase();
-  if (r === 'manager' || r === 'superintendent') return ['hazard','talk'];
-  if (r === 'supervisor') return ['talk','sop','ppe'];
-  return ['hazard']; // default (mis. Engineer / role lain)
+  let keys;
+  if (r === 'manager' || r === 'superintendent') keys = ['hazard','talk'];
+  else if (r === 'supervisor') keys = ['talk','sop','ppe'];
+  else keys = ['hazard'];
+  // Dashboard bisa diakses SEMUA role.
+  return keys.concat(['dash']);
 }
 
 function renderMenu(){
@@ -1331,7 +1502,10 @@ function renderMenu(){
     btn.className = 'menu-item';
     btn.innerHTML = '<span class="menu-icon">' + def.icon + '</span>' +
       '<span class="menu-text"><b>' + def.title + '</b><span>' + def.sub + '</span></span>';
-    btn.addEventListener('click', () => showScreen(def.screen));
+    btn.addEventListener('click', () => {
+      showScreen(def.screen);
+      if (key === 'dash') loadDashboard();
+    });
     grid.appendChild(btn);
   });
 }
@@ -1578,8 +1752,6 @@ const PPE_TAMBAHAN = [
   { key:'glove', label:'Glove' }
 ];
 
-// Membuat satu baris item APD. optional=true -> ada tombol "aktifkan" dulu
-// (dipakai untuk APD Tambahan, karena tergantung lokasi kerja).
 function createPpeItem(container, def, optional){
   const wrap = document.createElement('div');
   wrap.className = 'ppe-item';
@@ -1633,7 +1805,7 @@ function createPpeItem(container, def, optional){
   note.placeholder = 'Catatan (wajib diisi kalau ditandai silang) / Note (required if crossed)';
   wrap.appendChild(note);
 
-  let state = ''; // '', 'ok', 'x'
+  let state = '';
 
   function setState(s){
     state = s;
@@ -1663,7 +1835,7 @@ function createPpeItem(container, def, optional){
     return '';
   }
   function isValid(){
-    if (optional && !enabled) return true; // tidak berlaku, tidak wajib diisi
+    if (optional && !enabled) return true;
     return state === 'ok' || state === 'x';
   }
   function reset(){
@@ -1686,10 +1858,7 @@ function createPpeItem(container, def, optional){
   const wajibItems = PPE_WAJIB.map(def => createPpeItem(wajibList, def, false));
   const tambahanItems = PPE_TAMBAHAN.map(def => createPpeItem(tambahanList, def, true));
 
-  // APD Tambahan kustom — item yang ditambahkan sendiri oleh auditor (belum
-  // ada di daftar baku). Disimpan terpisah karena kolom sheet-nya juga
-  // terpisah (lihat "APD Tambahan - Lainnya" di Code.gs).
-  const customTambahanItems = []; // { label, api }
+  const customTambahanItems = [];
   const addInput = document.getElementById('ppe_addInput');
   const addBtn = document.getElementById('ppe_addBtn');
   addBtn.addEventListener('click', () => {
@@ -1784,6 +1953,304 @@ function createPpeItem(container, def, optional){
     }
   });
 })();
+
+/* ============================================================================
+ *  DASHBOARD
+ * ========================================================================= */
+let DASH_CACHE = null;
+
+document.querySelectorAll('.dash-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dash-pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.getAttribute('data-pane')).classList.add('active');
+  });
+});
+
+async function loadDashboard(force){
+  const loadingEl = document.getElementById('dashLoading');
+  const errEl = document.getElementById('dashError');
+  const contentEl = document.getElementById('dashContent');
+  errEl.classList.remove('show');
+  if (DASH_CACHE && !force){
+    renderDashboard(DASH_CACHE);
+    return;
+  }
+  loadingEl.style.display = 'block';
+  contentEl.style.display = 'none';
+  try{
+    const data = await callApi({ action: 'getDashboardData' });
+    DASH_CACHE = data;
+    renderDashboard(data);
+  }catch(err){
+    errEl.textContent = err.message || 'Gagal memuat dashboard.';
+    errEl.classList.add('show');
+  }finally{
+    loadingEl.style.display = 'none';
+    contentEl.style.display = 'block';
+  }
+}
+
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderDashboard(data){
+  renderDashKpi(data);
+  renderDashRecap(data);
+  renderDashTargets(data);
+  renderDashRanking(data);
+  renderDashReports(data);
+  wireDashLookup(data);
+}
+
+function renderDashKpi(data){
+  const grid = document.getElementById('dashKpiGrid');
+  const t = data.totals || { hazard:0, talk:0, sop:0, ppe:0 };
+  grid.innerHTML = [
+    ['Hazard Report', t.hazard],
+    ['Safety Talk', t.talk],
+    ['Audit SOP', t.sop],
+    ['Audit PPE', t.ppe]
+  ].map(([label, val]) => (
+    '<div class="kpi-card"><div class="kpi-label">' + escapeHtml(label) + '</div><div class="kpi-value">' + (val||0) + '</div></div>'
+  )).join('');
+}
+
+function renderDashRecap(data){
+  const tbody = document.getElementById('dashRecapBody');
+  const rows = data.recap || [];
+  if (!rows.length){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--ink-soft);">Belum ada data.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => (
+    '<tr><td>' + escapeHtml(r.name) + '</td>' +
+    '<td class="num">' + r.hazard + '</td>' +
+    '<td class="num">' + r.talk + '</td>' +
+    '<td class="num">' + r.sop + '</td>' +
+    '<td class="num">' + r.ppe + '</td>' +
+    '<td class="num">' + r.total + '</td></tr>'
+  )).join('');
+}
+
+function renderDashRanking(data){
+  const grid = document.getElementById('dashRankGrid');
+  const rankings = data.rankings || {};
+  const labels = { hazard:'Hazard Report', talk:'Safety Talk', sop:'Audit SOP', ppe:'Audit PPE' };
+  grid.innerHTML = Object.keys(labels).map(key => {
+    const r = rankings[key] || { top:[], bottom:[] };
+    return (
+      '<div class="rank-card"><h4>🏆 ' + labels[key] + ' — Top 3</h4>' +
+      renderRankList(r.top) + '</div>' +
+      '<div class="rank-card"><h4>⚠️ ' + labels[key] + ' — Bottom 3</h4>' +
+      renderRankList(r.bottom) + '</div>'
+    );
+  }).join('');
+}
+function renderRankList(list){
+  if (!list || !list.length) return '<div class="rank-empty">Belum ada data.</div>';
+  return '<ul class="rank-list">' + list.map(e => (
+    '<li><span>' + escapeHtml(e.name) + '</span><b>' + e.count + '</b></li>'
+  )).join('') + '</ul>';
+}
+
+/* ---------- Target & Capaian ---------- */
+function renderDashTargets(data){
+  const canEdit = canManageDashboard();
+  document.getElementById('dashTargetEditNote').textContent = canEdit
+    ? 'Anda bisa mengubah angka target di bawah (akun Manager/Engineer).'
+    : 'Hanya akun Manager/Engineer yang bisa mengubah target.';
+
+  const list = document.getElementById('dashTargetList');
+  const targets = data.targets || [];
+  const achievement = data.achievement || {};
+
+  list.innerHTML = targets.map(t => {
+    const key = t.role + '::' + t.metric;
+    const ach = achievement[key] || { count:0 };
+    const pct = t.targetPerYear > 0 ? Math.min(100, Math.round((ach.count / t.targetPerYear) * 100)) : 0;
+    const over = ach.count >= t.targetPerYear && t.targetPerYear > 0;
+    return (
+      '<div class="target-card">' +
+        '<div class="t-head"><b>' + escapeHtml(t.role) + ' — ' + escapeHtml(t.label || t.metric) + '</b>' +
+        '<span>' + ach.count + ' / ' + t.targetPerYear + 'x per tahun</span></div>' +
+        '<div class="progress-bar' + (over ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div>' +
+        (canEdit ?
+          '<div class="target-input-row">' +
+            '<input type="number" min="0" value="' + t.targetPerYear + '" data-role="' + escapeHtml(t.role) + '" data-metric="' + escapeHtml(t.metric) + '" class="dashTargetInput">' +
+            '<button type="button" class="btn btn-primary dashTargetSaveBtn" data-role="' + escapeHtml(t.role) + '" data-metric="' + escapeHtml(t.metric) + '" data-label="' + escapeHtml(t.label||'') + '">Simpan</button>' +
+          '</div>'
+        : '') +
+      '</div>'
+    );
+  }).join('');
+
+  if (canEdit){
+    list.querySelectorAll('.dashTargetSaveBtn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const role = btn.getAttribute('data-role');
+        const metric = btn.getAttribute('data-metric');
+        const label = btn.getAttribute('data-label');
+        const input = list.querySelector('.dashTargetInput[data-role="' + CSS.escape(role) + '"][data-metric="' + CSS.escape(metric) + '"]');
+        const val = Number(input.value) || 0;
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        try{
+          await callApi({ action:'saveTargets', targets: [{ role, metric, targetPerYear: val, label }] });
+          await loadDashboard(true);
+        }catch(err){
+          alert(err.message || 'Gagal menyimpan target.');
+        }finally{
+          btn.disabled = false; btn.textContent = 'Simpan';
+        }
+      });
+    });
+  }
+}
+
+/* ---------- Rapor per orang ---------- */
+function wireDashLookup(data){
+  const btn = document.getElementById('dashLookupBtn');
+  const input = document.getElementById('dashLookupInput');
+  const resultEl = document.getElementById('dashLookupResult');
+  function doLookup(){
+    const q = input.value.trim().toLowerCase();
+    resultEl.classList.remove('show');
+    if (!q) return;
+    const people = data.people || [];
+    let match = people.find(p => (p.idBadges||'').toLowerCase() === q);
+    if (!match) match = people.find(p => (p.name||'').toLowerCase() === q);
+    if (!match) match = people.find(p => (p.name||'').toLowerCase().indexOf(q) !== -1);
+    if (!match){
+      resultEl.innerHTML = '<p style="margin:0; color:var(--ink-soft);">Tidak ditemukan data untuk "' + escapeHtml(input.value.trim()) + '".</p>';
+      resultEl.classList.add('show');
+      return;
+    }
+    resultEl.innerHTML =
+      '<div class="lr-name">' + escapeHtml(match.name) + '</div>' +
+      '<div class="lr-meta">' + escapeHtml(match.jobTitle || match.role || '-') + (match.idBadges ? ' · ID Badges ' + escapeHtml(match.idBadges) : '') + '</div>' +
+      '<div class="kpi-grid">' +
+        '<div class="kpi-card"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
+        '<div class="kpi-card"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
+        '<div class="kpi-card"><div class="kpi-label">Audit SOP</div><div class="kpi-value">' + (match.sop||0) + '</div></div>' +
+        '<div class="kpi-card"><div class="kpi-label">Audit PPE</div><div class="kpi-value">' + (match.ppe||0) + '</div></div>' +
+      '</div>';
+    resultEl.classList.add('show');
+  }
+  btn.onclick = doLookup;
+  input.onkeydown = (e) => { if (e.key === 'Enter') doLookup(); };
+}
+
+/* ---------- Daftar laporan (filter + foto) ---------- */
+function renderDashReports(data){
+  const typeSel = document.getElementById('dashFilterType');
+  const limitSel = document.getElementById('dashFilterLimit');
+  function render(){
+    const typeFilter = typeSel.value;
+    const limit = Number(limitSel.value) || 0;
+    let rows = (data.reportsList || []).slice();
+    if (typeFilter) rows = rows.filter(r => r.type === typeFilter);
+    if (limit > 0) rows = rows.slice(0, limit);
+    const tbody = document.getElementById('dashReportsBody');
+    if (!rows.length){
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft);">Tidak ada laporan.</td></tr>';
+      return;
+    }
+    const canEdit = canManageDashboard();
+    tbody.innerHTML = rows.map((r, idx) => {
+      const rid = 'rpt_' + idx;
+      let photoCell;
+      if (r.photoUrl){
+        photoCell = '<img class="report-thumb" src="' + escapeHtml(r.photoUrl) + '" data-full="' + escapeHtml(r.photoUrl) + '">';
+      } else {
+        photoCell = '<div class="report-thumb-empty">Tidak ada foto</div>';
+      }
+      let actions = '';
+      if (canEdit){
+        actions = '<div class="report-photo-actions">' +
+          '<label class="dashUploadLabel" style="cursor:pointer;"><input type="file" accept="image/*" style="display:none;" class="dashUploadInput" data-sheet="' + escapeHtml(r.sheet) + '" data-row="' + r.row + '" data-field="' + escapeHtml(r.photoField) + '">Upload</label>' +
+          (r.photoUrl ? '<button type="button" class="danger dashDeletePhotoBtn" data-sheet="' + escapeHtml(r.sheet) + '" data-row="' + r.row + '" data-field="' + escapeHtml(r.photoField) + '">Hapus</button>' : '') +
+        '</div>';
+      }
+      return (
+        '<tr>' +
+          '<td>' + escapeHtml(r.name) + '</td>' +
+          '<td><span class="badge-type">' + escapeHtml(r.type) + '</span></td>' +
+          '<td>' + escapeHtml(r.title) + '</td>' +
+          '<td>' + escapeHtml(r.date) + '</td>' +
+          '<td>' + photoCell + actions + '</td>' +
+        '</tr>'
+      );
+    }).join('');
+
+    tbody.querySelectorAll('.report-thumb').forEach(img => {
+      img.addEventListener('click', () => openLightbox(img.getAttribute('data-full')));
+    });
+    if (canEdit){
+      tbody.querySelectorAll('.dashUploadInput').forEach(inp => {
+        inp.addEventListener('change', async () => {
+          const file = inp.files && inp.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async () => {
+            const img = new Image();
+            img.onload = async () => {
+              const off = document.createElement('canvas');
+              const scale = Math.min(1, 1000 / img.naturalWidth);
+              off.width = Math.round(img.naturalWidth * scale);
+              off.height = Math.round(img.naturalHeight * scale);
+              const octx = off.getContext('2d');
+              octx.fillStyle = '#fff'; octx.fillRect(0,0,off.width,off.height);
+              octx.drawImage(img, 0, 0, off.width, off.height);
+              const dataUrl = off.toDataURL('image/jpeg', 0.75);
+              try{
+                await callApi({
+                  action: 'uploadReportPhoto',
+                  sheetName: inp.getAttribute('data-sheet'),
+                  row: Number(inp.getAttribute('data-row')),
+                  field: inp.getAttribute('data-field'),
+                  photo: dataUrl
+                });
+                await loadDashboard(true);
+              }catch(err){ alert(err.message || 'Gagal upload foto.'); }
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+      tbody.querySelectorAll('.dashDeletePhotoBtn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Hapus foto ini?')) return;
+          try{
+            await callApi({
+              action: 'deleteReportPhoto',
+              sheetName: btn.getAttribute('data-sheet'),
+              row: Number(btn.getAttribute('data-row')),
+              field: btn.getAttribute('data-field')
+            });
+            await loadDashboard(true);
+          }catch(err){ alert(err.message || 'Gagal menghapus foto.'); }
+        });
+      });
+    }
+  }
+  typeSel.onchange = render;
+  limitSel.onchange = render;
+  render();
+}
+
+function openLightbox(url){
+  document.getElementById('photoLightboxImg').src = url;
+  document.getElementById('photoLightbox').classList.add('show');
+}
+document.getElementById('photoLightboxClose').addEventListener('click', () => {
+  document.getElementById('photoLightbox').classList.remove('show');
+});
+document.getElementById('photoLightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'photoLightbox') document.getElementById('photoLightbox').classList.remove('show');
+});
 
 /* ============================================================================
  *  LAYAR SUKSES
