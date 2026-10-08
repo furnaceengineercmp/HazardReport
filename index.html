@@ -296,6 +296,56 @@
   .lightbox img{max-width:100%; max-height:90vh; border-radius:10px;}
   .lightbox-close{position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%; background:#fff; border:none; font-size:1.2rem; cursor:pointer;}
   .dash-note{font-size:.76rem; color:var(--ink-soft); margin:0 0 14px; font-style:italic;}
+
+  /* Warna konsisten per jenis laporan */
+  :root{ --c-hazard:#d2001c; --c-talk:#e0a100; --c-sop:#1a7f37; --c-ppe:#1f6feb; }
+  [data-theme="dark"]{ --c-hazard:#ff5470; --c-talk:#ffd85c; --c-sop:#39c26a; --c-ppe:#58a6ff; }
+  .kpi-card{position:relative; overflow:hidden; border-left:5px solid var(--line);}
+  .kpi-card.c-hazard{border-left-color:var(--c-hazard); background:linear-gradient(135deg, rgba(210,0,28,.09), transparent 70%), var(--paper);}
+  .kpi-card.c-talk{border-left-color:var(--c-talk); background:linear-gradient(135deg, rgba(224,161,0,.12), transparent 70%), var(--paper);}
+  .kpi-card.c-sop{border-left-color:var(--c-sop); background:linear-gradient(135deg, rgba(26,127,55,.10), transparent 70%), var(--paper);}
+  .kpi-card.c-ppe{border-left-color:var(--c-ppe); background:linear-gradient(135deg, rgba(31,111,235,.10), transparent 70%), var(--paper);}
+  .kpi-card.c-hazard .kpi-value{color:var(--c-hazard);}
+  .kpi-card.c-talk .kpi-value{color:var(--c-talk);}
+  .kpi-card.c-sop .kpi-value{color:var(--c-sop);}
+  .kpi-card.c-ppe .kpi-value{color:var(--c-ppe);}
+  table.recap-table thead th{background:var(--accent); color:#fff;}
+  table.recap-table thead th.h-hazard{background:var(--c-hazard);}
+  table.recap-table thead th.h-talk{background:var(--c-talk); color:#111;}
+  table.recap-table thead th.h-sop{background:var(--c-sop);}
+  table.recap-table thead th.h-ppe{background:var(--c-ppe);}
+  table.recap-table tbody tr:nth-child(even) td{background:rgba(127,127,127,.07);}
+  table.recap-table td.n-hazard{color:var(--c-hazard);}
+  table.recap-table td.n-talk{color:var(--c-talk);}
+  table.recap-table td.n-sop{color:var(--c-sop);}
+  table.recap-table td.n-ppe{color:var(--c-ppe);}
+  table.recap-table td.num.zero{opacity:.35; font-weight:400;}
+  table.recap-table td.total-cell{background:var(--accent-soft) !important; color:var(--accent); font-weight:800;}
+  .rank-medal{display:inline-block; width:22px; text-align:center; margin-right:4px;}
+
+  .person-progress{margin-bottom:12px;}
+  .person-progress .pp-head{display:flex; justify-content:space-between; gap:8px; font-size:.8rem; margin-bottom:4px;}
+  .person-progress .pp-name em{font-style:normal; color:var(--ink-soft);}
+  .person-progress .pp-count{font-weight:700; white-space:nowrap;}
+  .person-progress .pp-count.done{color:var(--green);}
+
+  .lookup-banner{
+    display:flex; align-items:center; gap:14px; padding:16px; border-radius:12px; margin-bottom:14px; color:#fff;
+    background:linear-gradient(135deg, var(--accent), #8a0013);
+  }
+  .lookup-banner .lb-avatar{
+    width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.2); flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:800;
+  }
+  .lookup-banner .lr-name{font-size:1.15rem; font-weight:800; color:#fff;}
+  .lookup-banner .lr-meta{font-size:.8rem; color:rgba(255,255,255,.85); margin:2px 0 0;}
+  .lookup-total{
+    display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-radius:12px;
+    background:var(--accent-soft); color:var(--accent); font-weight:800; margin-bottom:14px;
+  }
+  .lookup-total b{font-size:1.5rem;}
+  .lookup-section-title{font-size:.78rem; font-weight:700; text-transform:uppercase; color:var(--ink-soft); margin:16px 0 8px; letter-spacing:.03em;}
+  .lookup-result{background:var(--paper);}
 </style>
 </head>
 <body>
@@ -511,7 +561,7 @@
         <div class="section">
           <h2>Foto Bukti<span class="en">Photo Evidence (opsional)</span></h2>
           <div class="photo-card" id="hz_photoCard">
-            <input type="file" id="hz_photoInput" accept="image/*" capture="environment">
+            <input type="file" id="hz_photoInput" accept="image/*">
             <div class="photo-drop" id="hz_photoDrop">
               <span id="hz_photoPlaceholder">Ketuk untuk pilih/ambil foto<br><span class="en" style="font-style:italic;">Tap to choose/take a photo</span></span>
             </div>
@@ -616,7 +666,7 @@
         <div class="section">
           <h2>Foto Pelaksanaan<span class="en">Execution photo</span></h2>
           <div class="photo-card" id="st_photoExecCard">
-            <input type="file" id="st_photoExecInput" accept="image/*" capture="environment">
+            <input type="file" id="st_photoExecInput" accept="image/*">
             <div class="photo-drop" id="st_photoExecDrop">
               <span id="st_photoExecPlaceholder">Ketuk untuk pilih/ambil foto</span>
             </div>
@@ -630,7 +680,7 @@
         <div class="section">
           <h2>Foto Absen<span class="en">Attendance photo</span></h2>
           <div class="photo-card" id="st_photoAttCard">
-            <input type="file" id="st_photoAttInput" accept="image/*" capture="environment">
+            <input type="file" id="st_photoAttInput" accept="image/*">
             <div class="photo-drop" id="st_photoAttDrop">
               <span id="st_photoAttPlaceholder">Ketuk untuk pilih/ambil foto</span>
             </div>
@@ -732,7 +782,7 @@
         <div class="section">
           <h2>Foto Pelaksanaan<span class="en">Execution photo</span></h2>
           <div class="photo-card" id="sop_photoCard">
-            <input type="file" id="sop_photoInput" accept="image/*" capture="environment">
+            <input type="file" id="sop_photoInput" accept="image/*">
             <div class="photo-drop" id="sop_photoDrop">
               <span id="sop_photoPlaceholder">Ketuk untuk pilih/ambil foto</span>
             </div>
@@ -867,7 +917,7 @@
         <div class="section">
           <h2>Foto Pelaksanaan<span class="en">Execution photo</span></h2>
           <div class="photo-card" id="ppe_photoCard">
-            <input type="file" id="ppe_photoInput" accept="image/*" capture="environment">
+            <input type="file" id="ppe_photoInput" accept="image/*">
             <div class="photo-drop" id="ppe_photoDrop">
               <span id="ppe_photoPlaceholder">Ketuk untuk pilih/ambil foto</span>
             </div>
@@ -954,10 +1004,10 @@
               <thead>
                 <tr>
                   <th>Nama</th>
-                  <th>Hazard Report</th>
-                  <th>Safety Talk</th>
-                  <th>Audit SOP</th>
-                  <th>Audit PPE</th>
+                  <th class="h-hazard">Hazard Report</th>
+                  <th class="h-talk">Safety Talk</th>
+                  <th class="h-sop">Audit SOP</th>
+                  <th class="h-ppe">Audit PPE</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -1011,7 +1061,6 @@
                   <th>Laporan Apa</th>
                   <th>Judul Laporan</th>
                   <th>Tanggal</th>
-                  <th>Foto</th>
                 </tr>
               </thead>
               <tbody id="dashReportsBody"></tbody>
@@ -1036,11 +1085,6 @@
   </section>
 
   <footer class="app-footer">Ceria Metalindo Prima &middot; Process Engineer</footer>
-</div>
-
-<div class="lightbox" id="photoLightbox">
-  <button class="lightbox-close" id="photoLightboxClose" type="button">&times;</button>
-  <img id="photoLightboxImg" src="" alt="Foto bukti">
 </div>
 
 <script>
@@ -2009,12 +2053,12 @@ function renderDashKpi(data){
   const grid = document.getElementById('dashKpiGrid');
   const t = data.totals || { hazard:0, talk:0, sop:0, ppe:0 };
   grid.innerHTML = [
-    ['Hazard Report', t.hazard],
-    ['Safety Talk', t.talk],
-    ['Audit SOP', t.sop],
-    ['Audit PPE', t.ppe]
-  ].map(([label, val]) => (
-    '<div class="kpi-card"><div class="kpi-label">' + escapeHtml(label) + '</div><div class="kpi-value">' + (val||0) + '</div></div>'
+    ['Hazard Report', t.hazard, 'c-hazard'],
+    ['Safety Talk', t.talk, 'c-talk'],
+    ['Audit SOP', t.sop, 'c-sop'],
+    ['Audit PPE', t.ppe, 'c-ppe']
+  ].map(([label, val, cls]) => (
+    '<div class="kpi-card ' + cls + '"><div class="kpi-label">' + escapeHtml(label) + '</div><div class="kpi-value">' + (val||0) + '</div></div>'
   )).join('');
 }
 
@@ -2025,13 +2069,12 @@ function renderDashRecap(data){
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--ink-soft);">Belum ada data.</td></tr>';
     return;
   }
-  tbody.innerHTML = rows.map(r => (
-    '<tr><td>' + escapeHtml(r.name) + '</td>' +
-    '<td class="num">' + r.hazard + '</td>' +
-    '<td class="num">' + r.talk + '</td>' +
-    '<td class="num">' + r.sop + '</td>' +
-    '<td class="num">' + r.ppe + '</td>' +
-    '<td class="num">' + r.total + '</td></tr>'
+  const medals = ['🥇','🥈','🥉'];
+  const cell = (v, cls) => '<td class="num ' + cls + (v ? '' : ' zero') + '">' + v + '</td>';
+  tbody.innerHTML = rows.map((r, i) => (
+    '<tr><td><span class="rank-medal">' + (medals[i] || '') + '</span>' + escapeHtml(r.name) + '</td>' +
+    cell(r.hazard, 'n-hazard') + cell(r.talk, 'n-talk') + cell(r.sop, 'n-sop') + cell(r.ppe, 'n-ppe') +
+    '<td class="num total-cell">' + r.total + '</td></tr>'
   )).join('');
 }
 
@@ -2056,31 +2099,45 @@ function renderRankList(list){
   )).join('') + '</ul>';
 }
 
-/* ---------- Target & Capaian ---------- */
+/* ---------- Target & Capaian (PER ORANG) ---------- */
 function renderDashTargets(data){
   const canEdit = canManageDashboard();
   document.getElementById('dashTargetEditNote').textContent = canEdit
-    ? 'Anda bisa mengubah angka target di bawah (akun Manager/Engineer).'
-    : 'Hanya akun Manager/Engineer yang bisa mengubah target.';
+    ? 'Capaian dihitung per akun (tahun berjalan). Anda bisa mengubah angka target tiap role (akun Manager/Engineer).'
+    : 'Capaian dihitung per akun (tahun berjalan). Hanya akun Manager/Engineer yang bisa mengubah target.';
 
   const list = document.getElementById('dashTargetList');
   const targets = data.targets || [];
-  const achievement = data.achievement || {};
+  const achievement = Array.isArray(data.achievement) ? data.achievement : [];
 
   list.innerHTML = targets.map(t => {
-    const key = t.role + '::' + t.metric;
-    const ach = achievement[key] || { count:0 };
-    const pct = t.targetPerYear > 0 ? Math.min(100, Math.round((ach.count / t.targetPerYear) * 100)) : 0;
-    const over = ach.count >= t.targetPerYear && t.targetPerYear > 0;
+    const entries = achievement
+      .filter(a => a.role === t.role && a.metric === t.metric)
+      .sort((a, b) => b.count - a.count);
+
+    const personRows = entries.length ? entries.map(e => {
+      const pct = t.targetPerYear > 0 ? Math.min(100, Math.round((e.count / t.targetPerYear) * 100)) : 0;
+      const done = t.targetPerYear > 0 && e.count >= t.targetPerYear;
+      return (
+        '<div class="person-progress">' +
+          '<div class="pp-head">' +
+            '<span class="pp-name">' + escapeHtml(e.name) + (e.jobTitle ? ' <em>· ' + escapeHtml(e.jobTitle) + '</em>' : '') + '</span>' +
+            '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + t.targetPerYear + 'x' + (done ? ' ✓' : '') + '</span>' +
+          '</div>' +
+          '<div class="progress-bar' + (done ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div>' +
+        '</div>'
+      );
+    }).join('') : '<p class="rank-empty">Belum ada akun dengan role ini.</p>';
+
     return (
       '<div class="target-card">' +
         '<div class="t-head"><b>' + escapeHtml(t.role) + ' — ' + escapeHtml(t.label || t.metric) + '</b>' +
-        '<span>' + ach.count + ' / ' + t.targetPerYear + 'x per tahun</span></div>' +
-        '<div class="progress-bar' + (over ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div>' +
+        '<span>Target: ' + t.targetPerYear + 'x / tahun per orang</span></div>' +
+        personRows +
         (canEdit ?
           '<div class="target-input-row">' +
             '<input type="number" min="0" value="' + t.targetPerYear + '" data-role="' + escapeHtml(t.role) + '" data-metric="' + escapeHtml(t.metric) + '" class="dashTargetInput">' +
-            '<button type="button" class="btn btn-primary dashTargetSaveBtn" data-role="' + escapeHtml(t.role) + '" data-metric="' + escapeHtml(t.metric) + '" data-label="' + escapeHtml(t.label||'') + '">Simpan</button>' +
+            '<button type="button" class="btn btn-primary dashTargetSaveBtn" data-role="' + escapeHtml(t.role) + '" data-metric="' + escapeHtml(t.metric) + '" data-label="' + escapeHtml(t.label || '') + '">Simpan target</button>' +
           '</div>'
         : '') +
       '</div>'
@@ -2102,7 +2159,7 @@ function renderDashTargets(data){
         }catch(err){
           alert(err.message || 'Gagal menyimpan target.');
         }finally{
-          btn.disabled = false; btn.textContent = 'Simpan';
+          btn.disabled = false; btn.textContent = 'Simpan target';
         }
       });
     });
@@ -2127,15 +2184,34 @@ function wireDashLookup(data){
       resultEl.classList.add('show');
       return;
     }
+    const total = (match.hazard||0) + (match.talk||0) + (match.sop||0) + (match.ppe||0);
+    const initial = escapeHtml((match.name || '?').trim().charAt(0).toUpperCase());
+
+    // Target tahun ini milik orang ini (kalau role-nya punya target)
+    const mine = (Array.isArray(data.achievement) ? data.achievement : []).filter(a => a.name === match.name);
+    const targetHtml = mine.length ? (
+      '<div class="lookup-section-title">Target tahun ini</div>' +
+      mine.map(e => {
+        const pct = e.targetPerYear > 0 ? Math.min(100, Math.round((e.count / e.targetPerYear) * 100)) : 0;
+        const done = e.targetPerYear > 0 && e.count >= e.targetPerYear;
+        return '<div class="person-progress"><div class="pp-head"><span class="pp-name">' + escapeHtml(e.label || e.metric) + '</span>' +
+          '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + e.targetPerYear + 'x' + (done ? ' ✓' : '') + '</span></div>' +
+          '<div class="progress-bar' + (done ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div></div>';
+      }).join('')
+    ) : '';
+
     resultEl.innerHTML =
-      '<div class="lr-name">' + escapeHtml(match.name) + '</div>' +
-      '<div class="lr-meta">' + escapeHtml(match.jobTitle || match.role || '-') + (match.idBadges ? ' · ID Badges ' + escapeHtml(match.idBadges) : '') + '</div>' +
+      '<div class="lookup-banner"><div class="lb-avatar">' + initial + '</div><div>' +
+        '<div class="lr-name">' + escapeHtml(match.name) + '</div>' +
+        '<div class="lr-meta">' + escapeHtml(match.jobTitle || match.role || '-') + (match.idBadges ? ' · ID Badges ' + escapeHtml(match.idBadges) : '') + '</div>' +
+      '</div></div>' +
+      '<div class="lookup-total"><span>Total laporan</span><b>' + total + '</b></div>' +
       '<div class="kpi-grid">' +
-        '<div class="kpi-card"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
-        '<div class="kpi-card"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
-        '<div class="kpi-card"><div class="kpi-label">Audit SOP</div><div class="kpi-value">' + (match.sop||0) + '</div></div>' +
-        '<div class="kpi-card"><div class="kpi-label">Audit PPE</div><div class="kpi-value">' + (match.ppe||0) + '</div></div>' +
-      '</div>';
+        '<div class="kpi-card c-hazard"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
+        '<div class="kpi-card c-talk"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
+        '<div class="kpi-card c-sop"><div class="kpi-label">Audit SOP</div><div class="kpi-value">' + (match.sop||0) + '</div></div>' +
+        '<div class="kpi-card c-ppe"><div class="kpi-label">Audit PPE</div><div class="kpi-value">' + (match.ppe||0) + '</div></div>' +
+      '</div>' + targetHtml;
     resultEl.classList.add('show');
   }
   btn.onclick = doLookup;
@@ -2154,103 +2230,27 @@ function renderDashReports(data){
     if (limit > 0) rows = rows.slice(0, limit);
     const tbody = document.getElementById('dashReportsBody');
     if (!rows.length){
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft);">Tidak ada laporan.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Tidak ada laporan.</td></tr>';
       return;
     }
-    const canEdit = canManageDashboard();
-    tbody.innerHTML = rows.map((r, idx) => {
-      const rid = 'rpt_' + idx;
-      let photoCell;
-      if (r.photoUrl){
-        photoCell = '<img class="report-thumb" src="' + escapeHtml(r.photoUrl) + '" data-full="' + escapeHtml(r.photoUrl) + '">';
-      } else {
-        photoCell = '<div class="report-thumb-empty">Tidak ada foto</div>';
-      }
-      let actions = '';
-      if (canEdit){
-        actions = '<div class="report-photo-actions">' +
-          '<label class="dashUploadLabel" style="cursor:pointer;"><input type="file" accept="image/*" style="display:none;" class="dashUploadInput" data-sheet="' + escapeHtml(r.sheet) + '" data-row="' + r.row + '" data-field="' + escapeHtml(r.photoField) + '">Upload</label>' +
-          (r.photoUrl ? '<button type="button" class="danger dashDeletePhotoBtn" data-sheet="' + escapeHtml(r.sheet) + '" data-row="' + r.row + '" data-field="' + escapeHtml(r.photoField) + '">Hapus</button>' : '') +
-        '</div>';
-      }
-      return (
-        '<tr>' +
-          '<td>' + escapeHtml(r.name) + '</td>' +
-          '<td><span class="badge-type">' + escapeHtml(r.type) + '</span></td>' +
-          '<td>' + escapeHtml(r.title) + '</td>' +
-          '<td>' + escapeHtml(r.date) + '</td>' +
-          '<td>' + photoCell + actions + '</td>' +
-        '</tr>'
-      );
-    }).join('');
-
-    tbody.querySelectorAll('.report-thumb').forEach(img => {
-      img.addEventListener('click', () => openLightbox(img.getAttribute('data-full')));
-    });
-    if (canEdit){
-      tbody.querySelectorAll('.dashUploadInput').forEach(inp => {
-        inp.addEventListener('change', async () => {
-          const file = inp.files && inp.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = async () => {
-            const img = new Image();
-            img.onload = async () => {
-              const off = document.createElement('canvas');
-              const scale = Math.min(1, 1000 / img.naturalWidth);
-              off.width = Math.round(img.naturalWidth * scale);
-              off.height = Math.round(img.naturalHeight * scale);
-              const octx = off.getContext('2d');
-              octx.fillStyle = '#fff'; octx.fillRect(0,0,off.width,off.height);
-              octx.drawImage(img, 0, 0, off.width, off.height);
-              const dataUrl = off.toDataURL('image/jpeg', 0.75);
-              try{
-                await callApi({
-                  action: 'uploadReportPhoto',
-                  sheetName: inp.getAttribute('data-sheet'),
-                  row: Number(inp.getAttribute('data-row')),
-                  field: inp.getAttribute('data-field'),
-                  photo: dataUrl
-                });
-                await loadDashboard(true);
-              }catch(err){ alert(err.message || 'Gagal upload foto.'); }
-            };
-            img.src = reader.result;
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-      tbody.querySelectorAll('.dashDeletePhotoBtn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if (!confirm('Hapus foto ini?')) return;
-          try{
-            await callApi({
-              action: 'deleteReportPhoto',
-              sheetName: btn.getAttribute('data-sheet'),
-              row: Number(btn.getAttribute('data-row')),
-              field: btn.getAttribute('data-field')
-            });
-            await loadDashboard(true);
-          }catch(err){ alert(err.message || 'Gagal menghapus foto.'); }
-        });
-      });
-    }
+    // Catatan: kolom foto sengaja tidak ditampilkan di sini (supaya Dashboard
+    // tetap ringan & tidak bergantung pada pembacaan gambar dari Sheets yang
+    // kadang tidak konsisten). Foto bukti tetap tersimpan aman di Google
+    // Sheets masing-masing dan bisa dilihat langsung di sana.
+    tbody.innerHTML = rows.map(r => (
+      '<tr>' +
+        '<td>' + escapeHtml(r.name) + '</td>' +
+        '<td><span class="badge-type">' + escapeHtml(r.type) + '</span></td>' +
+        '<td>' + escapeHtml(r.title) + '</td>' +
+        '<td>' + escapeHtml(r.date) + '</td>' +
+      '</tr>'
+    )).join('');
   }
   typeSel.onchange = render;
   limitSel.onchange = render;
   render();
 }
 
-function openLightbox(url){
-  document.getElementById('photoLightboxImg').src = url;
-  document.getElementById('photoLightbox').classList.add('show');
-}
-document.getElementById('photoLightboxClose').addEventListener('click', () => {
-  document.getElementById('photoLightbox').classList.remove('show');
-});
-document.getElementById('photoLightbox').addEventListener('click', (e) => {
-  if (e.target.id === 'photoLightbox') document.getElementById('photoLightbox').classList.remove('show');
-});
 
 /* ============================================================================
  *  LAYAR SUKSES
