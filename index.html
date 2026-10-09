@@ -323,6 +323,24 @@
   table.recap-table td.total-cell{background:var(--accent-soft) !important; color:var(--accent); font-weight:800;}
   .rank-medal{display:inline-block; width:22px; text-align:center; margin-right:4px;}
 
+  .dash-filter{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; padding:10px 12px;
+    border:1.5px solid var(--line); border-radius:12px; background:var(--bg); font-size:.82rem;
+  }
+  .dash-filter label{margin:0; font-size:.78rem; font-weight:700; color:var(--ink-soft);}
+  .dash-filter select{margin:0; width:auto; padding:7px 10px; font-size:.85rem;}
+  .dash-filter .dash-refresh{width:auto; padding:6px 11px; border-radius:8px; border:1.5px solid var(--line); background:var(--paper); cursor:pointer; font-size:.9rem;}
+  .recap-note{font-size:.74rem; color:var(--ink-soft); margin:-8px 0 16px; line-height:1.5;}
+  .recap-note .na-sample{display:inline-block; width:14px; height:10px; background:rgba(127,127,127,.35); border-radius:2px; vertical-align:middle; margin:0 3px;}
+  table.recap-table tbody tr td.na{background:rgba(127,127,127,.30); color:var(--ink-soft); opacity:1; font-weight:400;}
+  table.recap-table td .who-role{display:block; font-size:.68rem; color:var(--ink-soft); margin-left:30px; margin-top:1px;}
+  table.recap-table thead th.h-pct{background:#6b3fa0;}
+  table.recap-table td.pct-cell{min-width:82px;}
+  table.recap-table td.pct-cell b{color:#6b3fa0; font-size:.85rem;}
+  [data-theme="dark"] table.recap-table td.pct-cell b{color:#c8a6ff;}
+  table.recap-table td.pct-cell.none{color:var(--ink-soft); font-weight:400;}
+  .mini-bar{height:5px; border-radius:99px; background:var(--line); overflow:hidden; margin-top:4px;}
+  .mini-bar > div{height:100%; background:#6b3fa0; border-radius:99px;}
   .person-progress{margin-bottom:12px;}
   .person-progress .pp-head{display:flex; justify-content:space-between; gap:8px; font-size:.8rem; margin-bottom:4px;}
   .person-progress .pp-name em{font-style:normal; color:var(--ink-soft);}
@@ -984,6 +1002,14 @@
       <h1 style="margin-top:0;">DASHBOARD<span class="en">Rekap &amp; performa laporan</span></h1>
       <p class="dash-note">Data diambil langsung dari sheet Data Hazard / Data Safety Talk / Data Audit SOP / Data Audit PPE.</p>
 
+      <div class="dash-filter">
+        <label for="dashYearFrom">Periode:</label>
+        <select id="dashYearFrom"></select>
+        <span>s/d</span>
+        <select id="dashYearTo"></select>
+        <button type="button" class="dash-refresh" id="dashRefreshBtn" title="Muat ulang data">⟳</button>
+      </div>
+
       <div class="dash-tabs">
         <button type="button" class="dash-tab active" data-pane="dash-pane-rekap">Rekap Total</button>
         <button type="button" class="dash-tab" data-pane="dash-pane-target">Target &amp; Capaian</button>
@@ -1009,11 +1035,13 @@
                   <th class="h-sop">Audit SOP</th>
                   <th class="h-ppe">Audit PPE</th>
                   <th>Total</th>
+                  <th class="h-pct">Capaian</th>
                 </tr>
               </thead>
               <tbody id="dashRecapBody"></tbody>
             </table>
           </div>
+          <p class="recap-note" id="dashRecapNote"></p>
         </div>
 
         <!-- PANE: Target & Capaian -->
@@ -1176,6 +1204,13 @@ async function callApi(payload){
   }
   if (data.result === 'error') throw new Error(data.message || 'Terjadi kesalahan.');
   return data;
+}
+
+// Kode unik per pengisian form — dikirim ke server supaya kiriman ulang
+// (klik lagi karena lambat / koneksi putus) TIDAK membuat baris dobel di Sheets.
+function newSubmissionId(){
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
 }
 
 /* ============================================================================
@@ -1559,6 +1594,7 @@ function renderMenu(){
  * ========================================================================= */
 (function initHazardForm(){
   const form = document.getElementById('hazardForm');
+  let subId = newSubmissionId();
   const wgChips = document.getElementById('hz_workGroupChips');
   const clChips = document.getElementById('hz_classificationChips');
   const svChips = document.getElementById('hz_severityChips');
@@ -1584,6 +1620,7 @@ function renderMenu(){
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn.disabled) return; // sedang mengirim -> abaikan klik berikutnya
     statusMsg.className = 'status-msg';
 
     if (!form.checkValidity()){
@@ -1602,6 +1639,7 @@ function renderMenu(){
 
     const payload = {
       action: 'submitHazard',
+      submissionId: subId,
       name: document.getElementById('hz_name').value.trim(),
       idBadges: document.getElementById('hz_idBadges').value.trim() || (session ? (session.idBadges || '') : ''),
       role: session ? session.role : '',
@@ -1622,7 +1660,7 @@ function renderMenu(){
 
     submitBtn.disabled = true; submitBtn.textContent = 'Mengirim... / Sending...';
     try{
-      await callApi(payload);
+      const resp = await callApi(payload);
       form.reset();
       populateHazardReporterFields();
       resetChipGroup(wgChips); resetChipGroup(clChips); resetChipGroup(svChips);
@@ -1630,7 +1668,9 @@ function renderMenu(){
       document.getElementById('hz_clOtherText').classList.remove('show');
       sigPad.clear();
       photo.clear();
-      goSuccess('Laporan Terkirim', 'Hazard report Anda sudah tersimpan. Terima kasih.');
+      subId = newSubmissionId();
+      if (resp && resp.duplicate) goSuccess('Sudah Terkirim', 'Laporan ini sudah masuk sebelumnya — tidak dobel. Terima kasih.');
+      else goSuccess('Laporan Terkirim', 'Hazard report Anda sudah tersimpan. Terima kasih.');
     }catch(err){
       showStatusMsg(statusMsg, 'err', err.message || 'Gagal mengirim laporan.');
     }finally{
@@ -1644,6 +1684,7 @@ function renderMenu(){
  * ========================================================================= */
 (function initSafetyTalkForm(){
   const form = document.getElementById('stForm');
+  let subId = newSubmissionId();
   const sigPad = createSignaturePad(
     document.getElementById('st_sigPad'),
     document.getElementById('st_sigClear'),
@@ -1669,6 +1710,7 @@ function renderMenu(){
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn.disabled) return; // sedang mengirim -> abaikan klik berikutnya
     statusMsg.className = 'status-msg';
 
     if (!form.checkValidity()){ form.reportValidity(); return; }
@@ -1680,6 +1722,7 @@ function renderMenu(){
     const session = getSession();
     const payload = {
       action: 'submitSafetyTalk',
+      submissionId: subId,
       username: session ? session.username : '',
       idBadges: session ? (session.idBadges || '') : '',
       fullName: session ? session.fullName : '',
@@ -1697,10 +1740,12 @@ function renderMenu(){
 
     submitBtn.disabled = true; submitBtn.textContent = 'Mengirim... / Sending...';
     try{
-      await callApi(payload);
+      const resp = await callApi(payload);
       form.reset();
       sigPad.clear(); photoExec.clear(); photoAtt.clear();
-      goSuccess('Safety Talk Terkirim', 'Data safety talk sudah tersimpan. Terima kasih.');
+      subId = newSubmissionId();
+      if (resp && resp.duplicate) goSuccess('Sudah Terkirim', 'Laporan ini sudah masuk sebelumnya — tidak dobel. Terima kasih.');
+      else goSuccess('Safety Talk Terkirim', 'Data safety talk sudah tersimpan. Terima kasih.');
     }catch(err){
       showStatusMsg(statusMsg, 'err', err.message || 'Gagal mengirim data.');
     }finally{
@@ -1714,6 +1759,7 @@ function renderMenu(){
  * ========================================================================= */
 (function initAuditSOPForm(){
   const form = document.getElementById('sopForm');
+  let subId = newSubmissionId();
   const sigAuditor = createSignaturePad(
     document.getElementById('sop_sigAuditorPad'),
     document.getElementById('sop_sigAuditorClear'),
@@ -1737,6 +1783,7 @@ function renderMenu(){
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn.disabled) return; // sedang mengirim -> abaikan klik berikutnya
     statusMsg.className = 'status-msg';
 
     if (!form.checkValidity()){ form.reportValidity(); return; }
@@ -1748,6 +1795,7 @@ function renderMenu(){
     const session = getSession();
     const payload = {
       action: 'submitAuditSOP',
+      submissionId: subId,
       username: session ? session.username : '',
       idBadges: session ? (session.idBadges || '') : '',
       fullName: session ? session.fullName : '',
@@ -1768,10 +1816,12 @@ function renderMenu(){
 
     submitBtn.disabled = true; submitBtn.textContent = 'Mengirim... / Sending...';
     try{
-      await callApi(payload);
+      const resp = await callApi(payload);
       form.reset();
       sigAuditor.clear(); sigAudited.clear(); photo.clear();
-      goSuccess('Audit SOP Terkirim', 'Data audit SOP sudah tersimpan. Terima kasih.');
+      subId = newSubmissionId();
+      if (resp && resp.duplicate) goSuccess('Sudah Terkirim', 'Laporan ini sudah masuk sebelumnya — tidak dobel. Terima kasih.');
+      else goSuccess('Audit SOP Terkirim', 'Data audit SOP sudah tersimpan. Terima kasih.');
     }catch(err){
       showStatusMsg(statusMsg, 'err', err.message || 'Gagal mengirim data.');
     }finally{
@@ -1915,6 +1965,7 @@ function createPpeItem(container, def, optional){
   });
 
   const form = document.getElementById('ppeForm');
+  let subId = newSubmissionId();
   const sigAuditor = createSignaturePad(
     document.getElementById('ppe_sigAuditorPad'),
     document.getElementById('ppe_sigAuditorClear'),
@@ -1938,6 +1989,7 @@ function createPpeItem(container, def, optional){
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn.disabled) return; // sedang mengirim -> abaikan klik berikutnya
     statusMsg.className = 'status-msg';
 
     if (!form.checkValidity()){ form.reportValidity(); return; }
@@ -1962,6 +2014,7 @@ function createPpeItem(container, def, optional){
 
     const payload = {
       action: 'submitAuditPPE',
+      submissionId: subId,
       username: session ? session.username : '',
       idBadges: session ? (session.idBadges || '') : '',
       fullName: session ? session.fullName : '',
@@ -1982,14 +2035,16 @@ function createPpeItem(container, def, optional){
 
     submitBtn.disabled = true; submitBtn.textContent = 'Mengirim... / Sending...';
     try{
-      await callApi(payload);
+      const resp = await callApi(payload);
       form.reset();
       wajibItems.forEach(i => i.reset());
       tambahanItems.forEach(i => i.reset());
       customTambahanItems.forEach(c => c.api.el.remove());
       customTambahanItems.length = 0;
       sigAuditor.clear(); sigAudited.clear(); photo.clear();
-      goSuccess('Audit PPE Terkirim', 'Data audit PPE sudah tersimpan. Terima kasih.');
+      subId = newSubmissionId();
+      if (resp && resp.duplicate) goSuccess('Sudah Terkirim', 'Laporan ini sudah masuk sebelumnya — tidak dobel. Terima kasih.');
+      else goSuccess('Audit PPE Terkirim', 'Data audit PPE sudah tersimpan. Terima kasih.');
     }catch(err){
       showStatusMsg(statusMsg, 'err', err.message || 'Gagal mengirim data.');
     }finally{
@@ -2012,6 +2067,8 @@ document.querySelectorAll('.dash-tab').forEach(tab => {
   });
 });
 
+let DASH_RANGE = null; // { from, to } tahun terpilih; null = default server (tahun berjalan)
+
 async function loadDashboard(force){
   const loadingEl = document.getElementById('dashLoading');
   const errEl = document.getElementById('dashError');
@@ -2024,8 +2081,12 @@ async function loadDashboard(force){
   loadingEl.style.display = 'block';
   contentEl.style.display = 'none';
   try{
-    const data = await callApi({ action: 'getDashboardData' });
+    const payload = { action: 'getDashboardData' };
+    if (DASH_RANGE){ payload.yearFrom = DASH_RANGE.from; payload.yearTo = DASH_RANGE.to; }
+    const data = await callApi(payload);
     DASH_CACHE = data;
+    DASH_RANGE = { from: data.yearFrom, to: data.yearTo };
+    setupDashYearFilter(data);
     renderDashboard(data);
   }catch(err){
     errEl.textContent = err.message || 'Gagal memuat dashboard.';
@@ -2034,6 +2095,21 @@ async function loadDashboard(force){
     loadingEl.style.display = 'none';
     contentEl.style.display = 'block';
   }
+}
+
+function setupDashYearFilter(data){
+  const fromEl = document.getElementById('dashYearFrom');
+  const toEl = document.getElementById('dashYearTo');
+  const opts = (data.years || []).map(y => '<option value="' + y + '">' + y + '</option>').join('');
+  fromEl.innerHTML = opts; toEl.innerHTML = opts;
+  fromEl.value = String(data.yearFrom); toEl.value = String(data.yearTo);
+  function onChange(){
+    DASH_RANGE = { from: Number(fromEl.value), to: Number(toEl.value) };
+    loadDashboard(true);
+  }
+  fromEl.onchange = onChange;
+  toEl.onchange = onChange;
+  document.getElementById('dashRefreshBtn').onclick = () => loadDashboard(true);
 }
 
 function escapeHtml(s){
@@ -2062,20 +2138,48 @@ function renderDashKpi(data){
   )).join('');
 }
 
+// Jenis laporan yang memang bisa dibuat oleh sebuah jabatan (sesuai menu
+// aplikasi). Role kosong/tidak dikenal -> dianggap semua bisa (tidak diabukan).
+function reportKeysForRole(role){
+  if (!String(role || '').trim()) return ['hazard','talk','sop','ppe'];
+  return menuKeysForRole(role).filter(k => k !== 'dash');
+}
+function fmtPct(p){
+  return (Math.round(p * 10) / 10).toString().replace('.', ',') + '%';
+}
+
 function renderDashRecap(data){
   const tbody = document.getElementById('dashRecapBody');
   const rows = data.recap || [];
+  const note = document.getElementById('dashRecapNote');
+  note.innerHTML =
+    'Urutan = <b>% capaian target</b> (laporan terkirim ÷ target tahunan jabatan × jumlah tahun periode), satu ranking untuk semua jabatan. ' +
+    'Kolom <span class="na-sample"></span>abu-abu = jabatan itu tidak membuat laporan tersebut. ' +
+    'Tanda "–" di Capaian = jabatan tanpa target (tidak diranking).';
   if (!rows.length){
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--ink-soft);">Belum ada data.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--ink-soft);">Belum ada data.</td></tr>';
     return;
   }
   const medals = ['🥇','🥈','🥉'];
-  const cell = (v, cls) => '<td class="num ' + cls + (v ? '' : ' zero') + '">' + v + '</td>';
-  tbody.innerHTML = rows.map((r, i) => (
-    '<tr><td><span class="rank-medal">' + (medals[i] || '') + '</span>' + escapeHtml(r.name) + '</td>' +
-    cell(r.hazard, 'n-hazard') + cell(r.talk, 'n-talk') + cell(r.sop, 'n-sop') + cell(r.ppe, 'n-ppe') +
-    '<td class="num total-cell">' + r.total + '</td></tr>'
-  )).join('');
+  let rank = 0;
+  tbody.innerHTML = rows.map(r => {
+    const ranked = r.percent !== null && r.percent !== undefined;
+    const medal = ranked && rank < 3 ? medals[rank] : '';
+    if (ranked) rank++;
+    const allowed = reportKeysForRole(r.role);
+    const cell = (key) => {
+      const v = r[key] || 0;
+      if (!v && allowed.indexOf(key) === -1) return '<td class="num na">–</td>';
+      return '<td class="num n-' + key + (v ? '' : ' zero') + '">' + v + '</td>';
+    };
+    const pctCell = ranked
+      ? '<td class="num pct-cell"><b>' + fmtPct(r.percent) + '</b><div class="mini-bar"><div style="width:' + Math.min(100, r.percent) + '%;"></div></div></td>'
+      : '<td class="num pct-cell none">–</td>';
+    return '<tr><td><span class="rank-medal">' + medal + '</span>' + escapeHtml(r.name) +
+      (r.role ? '<span class="who-role">' + escapeHtml(r.jobTitle || r.role) + '</span>' : '') + '</td>' +
+      cell('hazard') + cell('talk') + cell('sop') + cell('ppe') +
+      '<td class="num total-cell">' + r.total + '</td>' + pctCell + '</tr>';
+  }).join('');
 }
 
 function renderDashRanking(data){
@@ -2103,8 +2207,8 @@ function renderRankList(list){
 function renderDashTargets(data){
   const canEdit = canManageDashboard();
   document.getElementById('dashTargetEditNote').textContent = canEdit
-    ? 'Capaian dihitung per akun (tahun berjalan). Anda bisa mengubah angka target tiap role (akun Manager/Engineer).'
-    : 'Capaian dihitung per akun (tahun berjalan). Hanya akun Manager/Engineer yang bisa mengubah target.';
+    ? 'Capaian dihitung per akun untuk periode terpilih. Anda bisa mengubah angka target tiap role (akun Manager/Engineer).'
+    : 'Capaian dihitung per akun untuk periode terpilih. Hanya akun Manager/Engineer yang bisa mengubah target.';
 
   const list = document.getElementById('dashTargetList');
   const targets = data.targets || [];
@@ -2116,13 +2220,14 @@ function renderDashTargets(data){
       .sort((a, b) => b.count - a.count);
 
     const personRows = entries.length ? entries.map(e => {
-      const pct = t.targetPerYear > 0 ? Math.min(100, Math.round((e.count / t.targetPerYear) * 100)) : 0;
-      const done = t.targetPerYear > 0 && e.count >= t.targetPerYear;
+      const tgt = e.effectiveTarget != null ? e.effectiveTarget : t.targetPerYear;
+      const pct = tgt > 0 ? Math.min(100, Math.round((e.count / tgt) * 100)) : 0;
+      const done = tgt > 0 && e.count >= tgt;
       return (
         '<div class="person-progress">' +
           '<div class="pp-head">' +
             '<span class="pp-name">' + escapeHtml(e.name) + (e.jobTitle ? ' <em>· ' + escapeHtml(e.jobTitle) + '</em>' : '') + '</span>' +
-            '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + t.targetPerYear + 'x' + (done ? ' ✓' : '') + '</span>' +
+            '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + tgt + 'x' + (done ? ' ✓' : '') + '</span>' +
           '</div>' +
           '<div class="progress-bar' + (done ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div>' +
         '</div>'
@@ -2132,7 +2237,7 @@ function renderDashTargets(data){
     return (
       '<div class="target-card">' +
         '<div class="t-head"><b>' + escapeHtml(t.role) + ' — ' + escapeHtml(t.label || t.metric) + '</b>' +
-        '<span>Target: ' + t.targetPerYear + 'x / tahun per orang</span></div>' +
+        '<span>Target: ' + t.targetPerYear + 'x / tahun per orang' + ((data.yearsCount || 1) > 1 ? ' (× ' + data.yearsCount + ' tahun)' : '') + '</span></div>' +
         personRows +
         (canEdit ?
           '<div class="target-input-row">' +
@@ -2175,7 +2280,7 @@ function wireDashLookup(data){
     const q = input.value.trim().toLowerCase();
     resultEl.classList.remove('show');
     if (!q) return;
-    const people = data.people || [];
+    const people = data.recap || [];
     let match = people.find(p => (p.idBadges||'').toLowerCase() === q);
     if (!match) match = people.find(p => (p.name||'').toLowerCase() === q);
     if (!match) match = people.find(p => (p.name||'').toLowerCase().indexOf(q) !== -1);
@@ -2190,12 +2295,13 @@ function wireDashLookup(data){
     // Target tahun ini milik orang ini (kalau role-nya punya target)
     const mine = (Array.isArray(data.achievement) ? data.achievement : []).filter(a => a.name === match.name);
     const targetHtml = mine.length ? (
-      '<div class="lookup-section-title">Target tahun ini</div>' +
+      '<div class="lookup-section-title">Target periode terpilih</div>' +
       mine.map(e => {
-        const pct = e.targetPerYear > 0 ? Math.min(100, Math.round((e.count / e.targetPerYear) * 100)) : 0;
-        const done = e.targetPerYear > 0 && e.count >= e.targetPerYear;
+        const tgt = e.effectiveTarget != null ? e.effectiveTarget : e.targetPerYear;
+        const pct = tgt > 0 ? Math.min(100, Math.round((e.count / tgt) * 100)) : 0;
+        const done = tgt > 0 && e.count >= tgt;
         return '<div class="person-progress"><div class="pp-head"><span class="pp-name">' + escapeHtml(e.label || e.metric) + '</span>' +
-          '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + e.targetPerYear + 'x' + (done ? ' ✓' : '') + '</span></div>' +
+          '<span class="pp-count' + (done ? ' done' : '') + '">' + e.count + ' / ' + tgt + 'x' + (done ? ' ✓' : '') + '</span></div>' +
           '<div class="progress-bar' + (done ? ' over' : '') + '"><div style="width:' + pct + '%;"></div></div></div>';
       }).join('')
     ) : '';
@@ -2205,7 +2311,8 @@ function wireDashLookup(data){
         '<div class="lr-name">' + escapeHtml(match.name) + '</div>' +
         '<div class="lr-meta">' + escapeHtml(match.jobTitle || match.role || '-') + (match.idBadges ? ' · ID Badges ' + escapeHtml(match.idBadges) : '') + '</div>' +
       '</div></div>' +
-      '<div class="lookup-total"><span>Total laporan</span><b>' + total + '</b></div>' +
+      '<div class="lookup-total"><span>Total laporan (periode terpilih)</span><b>' + total + '</b></div>' +
+      (match.percent !== null && match.percent !== undefined ? '<div class="lookup-total" style="background:rgba(107,63,160,.12); color:#6b3fa0;"><span>Capaian target</span><b>' + fmtPct(match.percent) + '</b></div>' : '') +
       '<div class="kpi-grid">' +
         '<div class="kpi-card c-hazard"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
         '<div class="kpi-card c-talk"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
@@ -2256,6 +2363,7 @@ function renderDashReports(data){
  *  LAYAR SUKSES
  * ========================================================================= */
 function goSuccess(title, subtitle){
+  DASH_CACHE = null; // data dashboard berubah -> muat ulang saat dibuka berikutnya
   document.getElementById('successTitle').textContent = title;
   document.getElementById('successSubtitle').textContent = subtitle;
   showScreen('screen-success');
