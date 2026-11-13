@@ -296,6 +296,77 @@
   .lightbox.show{display:flex;}
   .lightbox img{max-width:100%; max-height:90vh; border-radius:10px;}
   .lightbox-close{position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:50%; background:#fff; border:none; font-size:1.2rem; cursor:pointer;}
+
+  /* ===== Daftar Laporan: warna per jenis, kolom foto, lightbox ===== */
+  .badge-type{color:#fff;}
+  .badge-type.b-hazard{background:var(--c-hazard);}
+  .badge-type.b-talk{background:var(--c-talk); color:#111;}
+  .badge-type.b-sop{background:var(--c-sop);}
+  .badge-type.b-ppe{background:var(--c-ppe);}
+  table.reports-table tr.row-hazard td{background:rgba(210,0,28,.07);}
+  table.reports-table tr.row-talk td{background:rgba(224,161,0,.11);}
+  table.reports-table tr.row-sop td{background:rgba(26,127,55,.09);}
+  table.reports-table tr.row-ppe td{background:rgba(31,111,235,.09);}
+  table.reports-table tr.row-hazard td:first-child{box-shadow:inset 6px 0 0 var(--c-hazard);}
+  table.reports-table tr.row-talk td:first-child{box-shadow:inset 6px 0 0 var(--c-talk);}
+  table.reports-table tr.row-sop td:first-child{box-shadow:inset 6px 0 0 var(--c-sop);}
+  table.reports-table tr.row-ppe td:first-child{box-shadow:inset 6px 0 0 var(--c-ppe);}
+  table.reports-table td:first-child{padding-left:16px;}
+  .photo-toggle{border:1.5px solid var(--line); background:var(--paper); border-radius:8px; padding:3px 8px; font-size:.7rem; font-weight:700; cursor:pointer; white-space:nowrap; text-transform:none;}
+  .photo-toggle.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .thumb-col{white-space:nowrap;}
+  .thumb-col.collapsed{width:1%; padding-left:6px !important; padding-right:6px !important;}
+  .thumb-set{display:flex; gap:6px; flex-wrap:nowrap;}
+  .thumb-item{position:relative; flex:none;}
+  .thumb-item .thumb-cap{display:block; font-size:.58rem; color:var(--ink-soft); text-align:center; margin-top:2px;}
+  .thumb-item img, .thumb-fail{width:56px; height:56px; border-radius:8px; object-fit:cover; cursor:zoom-in; border:1px solid var(--line); background:var(--bg); display:block;}
+  .thumb-fail{cursor:default; display:flex; align-items:center; justify-content:center; font-size:.6rem; color:var(--ink-soft); text-align:center;}
+  .thumb-none{font-size:.7rem; color:var(--ink-soft);}
+  .lb-wrap{position:relative; max-width:100%; text-align:center;}
+  .lb-cap{color:#fff; font-size:.85rem; margin-top:8px;}
+  .lb-open{display:inline-block; color:#fff; font-size:.75rem; margin-top:4px; opacity:.8;}
+  .lb-nav{position:absolute; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:50%; border:none; background:rgba(255,255,255,.9); color:#111; font-size:1.3rem; cursor:pointer;}
+  .lb-prev{left:12px;} .lb-next{right:12px;}
+  .lightbox{z-index:2000;}
+
+  /* ===== Cek Laporan ===== */
+  body.wide .wrap{max-width:1180px;}
+  .chk-toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px;}
+  .chk-toolbar select{margin:0; width:auto; flex:1; min-width:150px;}
+  .chk-toolbar .btn{width:auto; padding:10px 18px; flex:none;}
+  .chk-meta{font-size:.78rem; color:var(--ink-soft); margin:0 0 10px;}
+  .chk-table-wrap{overflow:auto; max-height:70vh; border:1px solid var(--line); border-radius:12px;}
+  table.chk-table{border-collapse:collapse; font-size:.76rem; min-width:100%;}
+  table.chk-table th, table.chk-table td{padding:7px 10px; border-bottom:1px solid var(--line); border-right:1px solid var(--line); text-align:left; vertical-align:top; max-width:260px;}
+  table.chk-table th{position:sticky; top:0; z-index:2; color:#fff; font-size:.7rem; white-space:nowrap;}
+  table.chk-table td .clamp{display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word;}
+  table.chk-table tbody tr{cursor:pointer;}
+  table.chk-table tbody tr:hover td{filter:brightness(.95);}
+  table.chk-table td.rn{font-weight:700; color:var(--ink-soft); text-align:center; position:sticky; left:0; background:var(--paper); z-index:1;}
+  .chk-hazard th{background:var(--c-hazard);} .chk-talk th{background:var(--c-talk); color:#111;}
+  .chk-sop th{background:var(--c-sop);} .chk-ppe th{background:var(--c-ppe);}
+  .chk-hazard tbody tr:nth-child(even) td:not(.rn){background:rgba(210,0,28,.05);}
+  .chk-talk tbody tr:nth-child(even) td:not(.rn){background:rgba(224,161,0,.08);}
+  .chk-sop tbody tr:nth-child(even) td:not(.rn){background:rgba(26,127,55,.06);}
+  .chk-ppe tbody tr:nth-child(even) td:not(.rn){background:rgba(31,111,235,.06);}
+  .modal-back{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:flex-start; justify-content:center; z-index:1500; padding:20px 12px; overflow:auto;}
+  .modal-back.show{display:flex;}
+  .modal-card{background:var(--paper); color:var(--ink); border-radius:16px; width:100%; max-width:760px; padding:20px; position:relative; border-top:8px solid var(--accent);}
+  .modal-card.t-hazard{border-top-color:var(--c-hazard);} .modal-card.t-talk{border-top-color:var(--c-talk);}
+  .modal-card.t-sop{border-top-color:var(--c-sop);} .modal-card.t-ppe{border-top-color:var(--c-ppe);}
+  .modal-x{position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--bg); cursor:pointer; font-size:1rem;}
+  .modal-card h3{margin:0 40px 4px 0; font-size:1.05rem;}
+  .detail-grid{display:grid; grid-template-columns:200px 1fr; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:12px;}
+  .detail-grid > div{padding:8px 12px; border-bottom:1px solid var(--line); font-size:.84rem; word-break:break-word; white-space:pre-wrap;}
+  .detail-grid > div.k{background:var(--bg); font-weight:700; color:var(--ink-soft); font-size:.76rem; white-space:normal;}
+  @media (max-width:560px){ .detail-grid{grid-template-columns:1fr;} .detail-grid > div.k{border-bottom:none; padding-bottom:2px;} }
+  .detail-sec{margin:18px 0 8px; font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);}
+  .detail-imgs{display:flex; flex-wrap:wrap; gap:12px;}
+  .detail-imgs figure{margin:0; text-align:center;}
+  .detail-imgs img{max-width:320px; max-height:260px; width:auto; border-radius:10px; border:1px solid var(--line); cursor:zoom-in; background:#fff; display:block;}
+  .detail-imgs.sig img{max-height:120px; max-width:240px; object-fit:contain; padding:6px;}
+  .detail-imgs figcaption{font-size:.72rem; color:var(--ink-soft); margin-top:4px;}
+  .detail-empty{font-size:.78rem; color:var(--ink-soft);}
   .dash-note{font-size:.76rem; color:var(--ink-soft); margin:0 0 14px; font-style:italic;}
 
   /* Warna konsisten per jenis laporan */
@@ -1111,6 +1182,7 @@
                   <th>Laporan Apa</th>
                   <th>Judul Laporan</th>
                   <th>Tanggal</th>
+                  <th class="thumb-col" id="dashPhotoTh"><button type="button" class="photo-toggle" id="dashPhotoToggle" title="Tampilkan / sembunyikan foto bukti">🖼 Foto</button></th>
                 </tr>
               </thead>
               <tbody id="dashReportsBody"></tbody>
@@ -1119,6 +1191,32 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- ===================== CEK LAPORAN (Engineer & Manager) ===================== -->
+  <section class="screen" id="screen-checkreport">
+    <div class="topbar-back" data-back-to="screen-menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      Kembali ke Menu
+    </div>
+    <div class="card">
+      <h1 style="margin-top:0;">CEK LAPORAN<span class="en">Data lengkap seperti di Sheet</span></h1>
+      <p class="dash-note">Pilih jenis laporan &amp; tahun, lalu klik salah satu baris untuk melihat laporan utuh beserta foto dan tanda tangan.</p>
+      <div class="chk-toolbar">
+        <select id="chkType">
+          <option value="hazard">Hazard Report</option>
+          <option value="talk">Safety Talk</option>
+          <option value="sop">Audit SOP</option>
+          <option value="ppe">Audit PPE</option>
+        </select>
+        <select id="chkYear"></select>
+        <button type="button" class="btn btn-primary" id="chkLoadBtn">Tampilkan</button>
+      </div>
+      <div id="chkError" class="error-box"></div>
+      <div id="chkLoading" class="dash-loading" style="display:none;">Memuat data laporan...</div>
+      <p class="chk-meta" id="chkMeta"></p>
+      <div class="chk-table-wrap" id="chkTableWrap" style="display:none;"></div>
     </div>
   </section>
 
@@ -1135,6 +1233,23 @@
   </section>
 
   <footer class="app-footer">Ceria Metalindo Prima &middot; Process Engineer</footer>
+</div>
+
+<div class="modal-back" id="detailModal">
+  <div class="modal-card" id="detailCard">
+    <button type="button" class="modal-x" id="detailClose">✕</button>
+    <div id="detailBody"></div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox">
+  <button type="button" class="lightbox-close" id="lbClose">✕</button>
+  <button type="button" class="lb-nav lb-prev" id="lbPrev">‹</button>
+  <div class="lb-wrap">
+    <img id="lbImg" alt="">
+    <div class="lb-cap" id="lbCap"></div>
+    <a class="lb-open" id="lbOpen" target="_blank" rel="noopener">Buka ukuran asli ↗</a>
+  </div>
+  <button type="button" class="lb-nav lb-next" id="lbNext">›</button>
 </div>
 
 <script>
@@ -1173,6 +1288,7 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
+  document.body.classList.toggle('wide', id === 'screen-checkreport');
   if (id === 'screen-hazard') populateHazardReporterFields();
   window.scrollTo(0,0);
   requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
@@ -1568,6 +1684,7 @@ const MENU_ICONS = {
   talk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>',
   sop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
   ppe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4Z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
   dash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>'
 };
 const MENU_DEFS = {
@@ -1575,6 +1692,7 @@ const MENU_DEFS = {
   talk:   { title:'Safety Talk', sub:'Toolbox meeting', icon:MENU_ICONS.talk, screen:'screen-safetytalk' },
   sop:    { title:'Audit SOP', sub:'Kepatuhan prosedur kerja', icon:MENU_ICONS.sop, screen:'screen-auditsop' },
   ppe:    { title:'Audit PPE', sub:'Kepatuhan alat pelindung diri', icon:MENU_ICONS.ppe, screen:'screen-auditppe' },
+  check:  { title:'Cek Laporan', sub:'Lihat data lengkap & tanda tangan', icon:MENU_ICONS.check, screen:'screen-checkreport' },
   dash:   { title:'Dashboard', sub:'Rekap & performa laporan', icon:MENU_ICONS.dash, screen:'screen-dashboard' }
 };
 
@@ -1585,7 +1703,9 @@ function menuKeysForRole(role){
   else if (r === 'supervisor') keys = ['talk','sop','ppe'];
   else keys = ['hazard'];
   // Dashboard bisa diakses SEMUA role.
-  return keys.concat(['dash']);
+  keys = keys.concat(['dash']);
+  if (r === 'manager' || r === 'engineer') keys.push('check');
+  return keys;
 }
 
 function renderMenu(){
@@ -1606,6 +1726,7 @@ function renderMenu(){
     btn.addEventListener('click', () => {
       showScreen(def.screen);
       if (key === 'dash') loadDashboard();
+      if (key === 'check') initCheckReport();
     });
     grid.appendChild(btn);
   });
@@ -2348,10 +2469,84 @@ function wireDashLookup(data){
   input.onkeydown = (e) => { if (e.key === 'Enter') doLookup(); };
 }
 
-/* ---------- Daftar laporan (filter + foto) ---------- */
+/* ---------- Helper foto (Drive) & lightbox ---------- */
+function driveId(url){
+  const m = String(url||'').match(/\/d\/([a-zA-Z0-9_-]+)/) || String(url||'').match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : '';
+}
+function imgSrc(url, w){
+  const id = driveId(url);
+  return id ? ('https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w||800)) : String(url||'');
+}
+function imgOpenUrl(url){
+  const id = driveId(url);
+  return id ? ('https://drive.google.com/file/d/' + id + '/view') : String(url||'');
+}
+let LB_LIST = [], LB_IDX = 0;
+function openLightbox(list, idx){
+  LB_LIST = list; LB_IDX = idx || 0;
+  showLightbox();
+  document.getElementById('lightbox').classList.add('show');
+}
+function showLightbox(){
+  const it = LB_LIST[LB_IDX]; if (!it) return;
+  document.getElementById('lbImg').src = imgSrc(it.url, 1600);
+  document.getElementById('lbCap').textContent = (it.label || '') + (LB_LIST.length > 1 ? '  (' + (LB_IDX+1) + '/' + LB_LIST.length + ')' : '');
+  document.getElementById('lbOpen').href = imgOpenUrl(it.url);
+  const multi = LB_LIST.length > 1;
+  document.getElementById('lbPrev').style.display = multi ? '' : 'none';
+  document.getElementById('lbNext').style.display = multi ? '' : 'none';
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); document.getElementById('lbImg').src = ''; }
+document.getElementById('lbClose').onclick = closeLightbox;
+document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+document.getElementById('lbPrev').onclick = () => { LB_IDX = (LB_IDX - 1 + LB_LIST.length) % LB_LIST.length; showLightbox(); };
+document.getElementById('lbNext').onclick = () => { LB_IDX = (LB_IDX + 1) % LB_LIST.length; showLightbox(); };
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('show')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft' && LB_LIST.length > 1) document.getElementById('lbPrev').click();
+  if (e.key === 'ArrowRight' && LB_LIST.length > 1) document.getElementById('lbNext').click();
+});
+// Klik gambar kecil (delegasi) -> buka lightbox. Atribut: data-lb = JSON daftar foto, data-i = indeks
+document.addEventListener('click', e => {
+  const img = e.target.closest && e.target.closest('img[data-lb]');
+  if (!img) return;
+  e.stopPropagation();
+  try{ openLightbox(JSON.parse(decodeURIComponent(img.getAttribute('data-lb'))), Number(img.getAttribute('data-i')) || 0); }catch(err){}
+}, true);
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t && t.tagName === 'IMG' && t.classList.contains('lazy-photo')){
+    const d = document.createElement('div'); d.className = 'thumb-fail'; d.textContent = 'Gagal muat';
+    t.replaceWith(d);
+  }
+}, true);
+
+const TYPE_CLASS = { 'Hazard Report':'hazard', 'Safety Talk':'talk', 'Audit SOP':'sop', 'Audit PPE':'ppe' };
+let DASH_SHOW_PHOTOS = false;
+
+function thumbsHtml(photos){
+  photos = (photos || []).filter(p => p && p.url);
+  if (!photos.length) return '<span class="thumb-none">—</span>';
+  const lb = encodeURIComponent(JSON.stringify(photos.map(p => ({ url:p.url, label:p.label }))));
+  return '<div class="thumb-set">' + photos.map((p, i) =>
+    '<div class="thumb-item"><img class="lazy-photo" loading="lazy" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 200)) + '" data-lb="' + lb + '" data-i="' + i + '" alt="' + escapeHtml(p.label) + '">' +
+    (photos.length > 1 ? '<span class="thumb-cap">' + escapeHtml(p.label) + '</span>' : '') + '</div>'
+  ).join('') + '</div>';
+}
+
+/* ---------- Daftar laporan (filter + warna + foto) ---------- */
 function renderDashReports(data){
   const typeSel = document.getElementById('dashFilterType');
   const limitSel = document.getElementById('dashFilterLimit');
+  const toggle = document.getElementById('dashPhotoToggle');
+  const th = document.getElementById('dashPhotoTh');
+  function applyToggleUi(){
+    toggle.classList.toggle('on', DASH_SHOW_PHOTOS);
+    toggle.textContent = DASH_SHOW_PHOTOS ? '🖼 Sembunyikan' : '🖼 Foto';
+    th.classList.toggle('collapsed', !DASH_SHOW_PHOTOS);
+  }
   function render(){
     const typeFilter = typeSel.value;
     const limit = Number(limitSel.value) || 0;
@@ -2359,26 +2554,142 @@ function renderDashReports(data){
     if (typeFilter) rows = rows.filter(r => r.type === typeFilter);
     if (limit > 0) rows = rows.slice(0, limit);
     const tbody = document.getElementById('dashReportsBody');
+    applyToggleUi();
     if (!rows.length){
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--ink-soft);">Tidak ada laporan.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft);">Tidak ada laporan.</td></tr>';
       return;
     }
-    // Catatan: kolom foto sengaja tidak ditampilkan di sini (supaya Dashboard
-    // tetap ringan & tidak bergantung pada pembacaan gambar dari Sheets yang
-    // kadang tidak konsisten). Foto bukti tetap tersimpan aman di Google
-    // Sheets masing-masing dan bisa dilihat langsung di sana.
-    tbody.innerHTML = rows.map(r => (
-      '<tr>' +
+    tbody.innerHTML = rows.map(r => {
+      const c = TYPE_CLASS[r.type] || '';
+      return '<tr class="row-' + c + '">' +
         '<td>' + escapeHtml(r.name) + '</td>' +
-        '<td><span class="badge-type">' + escapeHtml(r.type) + '</span></td>' +
+        '<td><span class="badge-type b-' + c + '">' + escapeHtml(r.type) + '</span></td>' +
         '<td>' + escapeHtml(r.title) + '</td>' +
         '<td>' + escapeHtml(r.date) + '</td>' +
-      '</tr>'
-    )).join('');
+        '<td class="thumb-col' + (DASH_SHOW_PHOTOS ? '' : ' collapsed') + '">' + (DASH_SHOW_PHOTOS ? thumbsHtml(r.photos) : '') + '</td>' +
+      '</tr>';
+    }).join('');
   }
+  toggle.onclick = () => { DASH_SHOW_PHOTOS = !DASH_SHOW_PHOTOS; render(); };
   typeSel.onchange = render;
   limitSel.onchange = render;
   render();
+}
+
+/* ============================================================================
+ *  CEK LAPORAN (khusus Engineer & Manager)
+ * ========================================================================= */
+let CHK_DATA = null, CHK_INIT = false;
+const CHK_LABEL = { hazard:'Hazard Report', talk:'Safety Talk', sop:'Audit SOP', ppe:'Audit PPE' };
+
+function initCheckReport(){
+  if (!canManageDashboard()) return;
+  const yearSel = document.getElementById('chkYear');
+  if (!CHK_INIT){
+    const now = new Date().getFullYear();
+    let opts = '';
+    for (let y = now; y >= now - 5; y--) opts += '<option value="' + y + '">' + y + '</option>';
+    yearSel.innerHTML = opts;
+    document.getElementById('chkLoadBtn').onclick = loadCheckReport;
+    document.getElementById('chkType').onchange = loadCheckReport;
+    yearSel.onchange = loadCheckReport;
+    document.getElementById('detailClose').onclick = () => document.getElementById('detailModal').classList.remove('show');
+    document.getElementById('detailModal').addEventListener('click', e => { if (e.target.id === 'detailModal') e.target.classList.remove('show'); });
+    CHK_INIT = true;
+  }
+  loadCheckReport();
+}
+
+async function loadCheckReport(){
+  const type = document.getElementById('chkType').value;
+  const year = Number(document.getElementById('chkYear').value);
+  const errEl = document.getElementById('chkError');
+  const loadEl = document.getElementById('chkLoading');
+  const wrap = document.getElementById('chkTableWrap');
+  const meta = document.getElementById('chkMeta');
+  errEl.classList.remove('show');
+  wrap.style.display = 'none'; meta.textContent = '';
+  loadEl.style.display = 'block';
+  try{
+    const data = await callApi({ action:'getReportTable', type:type, year:year });
+    CHK_DATA = data;
+    renderCheckTable(data, type);
+  }catch(err){
+    errEl.textContent = err.message || 'Gagal memuat laporan.';
+    errEl.classList.add('show');
+  }finally{
+    loadEl.style.display = 'none';
+  }
+}
+
+function renderCheckTable(data, type){
+  const wrap = document.getElementById('chkTableWrap');
+  const meta = document.getElementById('chkMeta');
+  const rows = data.rows || [];
+  const cols = data.columns || [];
+  meta.textContent = CHK_LABEL[type] + ' · tahun ' + data.year + ' · ' + rows.length + ' laporan (klik baris untuk detail lengkap)';
+  if (!rows.length){
+    wrap.innerHTML = '<div class="dash-loading">Tidak ada laporan untuk pilihan ini.</div>';
+    wrap.style.display = 'block';
+    return;
+  }
+  let html = '<table class="chk-table chk-' + type + '"><thead><tr><th>#</th>' +
+    cols.map(c => '<th>' + escapeHtml(c.label) + '</th>').join('') + '</tr></thead><tbody>';
+  rows.forEach((r, i) => {
+    html += '<tr data-i="' + i + '"><td class="rn">' + (i+1) + '</td>' + cols.map(c => {
+      if (c.kind === 'photo'){
+        const p = r.photos && r.photos[c.key];
+        return '<td>' + (p ? thumbsHtml([{ url:p, label:c.label }]) : '<span class="thumb-none">—</span>') + '</td>';
+      }
+      const v = r.cells[c.key];
+      return '<td><div class="clamp">' + escapeHtml(v == null ? '' : v) + '</div></td>';
+    }).join('') + '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+  wrap.style.display = 'block';
+  wrap.querySelectorAll('tbody tr').forEach(tr => {
+    tr.addEventListener('click', () => openReportDetail(Number(tr.getAttribute('data-i')), type));
+  });
+}
+
+function openReportDetail(i, type){
+  const r = CHK_DATA.rows[i]; if (!r) return;
+  const cols = CHK_DATA.columns || [];
+  const textCols = cols.filter(c => c.kind === 'text');
+  const photoCols = cols.filter(c => c.kind === 'photo');
+  const sigCols = CHK_DATA.sigColumns || [];
+  const nameCol = textCols.find(c => /name|fullname/i.test(c.label)) || textCols[0];
+  const title = CHK_LABEL[type] + (nameCol ? ' — ' + (r.cells[nameCol.key] || '') : '');
+
+  let html = '<h3>' + escapeHtml(title) + '</h3><div style="font-size:.76rem; color:var(--ink-soft);">Baris Sheet #' + r.row + '</div>';
+  html += '<div class="detail-grid">' + textCols.map(c => {
+    const v = r.cells[c.key];
+    return '<div class="k">' + escapeHtml(c.label) + '</div><div>' + escapeHtml(v == null || v === '' ? '-' : v) + '</div>';
+  }).join('') + '</div>';
+
+  const photos = photoCols.map(c => ({ url: r.photos && r.photos[c.key], label: c.label })).filter(p => p.url);
+  html += '<div class="detail-sec">Foto bukti</div>';
+  if (photos.length){
+    const lb = encodeURIComponent(JSON.stringify(photos));
+    html += '<div class="detail-imgs">' + photos.map((p, k) =>
+      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 800)) + '" data-lb="' + lb + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
+    ).join('') + '</div>';
+  } else html += '<div class="detail-empty">Tidak ada foto.</div>';
+
+  const sigs = sigCols.map(c => ({ url: r.sigs && r.sigs[c.key], label: c.label })).filter(p => p.url);
+  html += '<div class="detail-sec">Tanda tangan</div>';
+  if (sigs.length){
+    const lb2 = encodeURIComponent(JSON.stringify(sigs));
+    html += '<div class="detail-imgs sig">' + sigs.map((p, k) =>
+      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 600)) + '" data-lb="' + lb2 + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
+    ).join('') + '</div>';
+  } else html += '<div class="detail-empty">Tidak ada tanda tangan.</div>';
+
+  document.getElementById('detailBody').innerHTML = html;
+  document.getElementById('detailCard').className = 'modal-card t-' + type;
+  document.getElementById('detailModal').classList.add('show');
+  document.getElementById('detailModal').scrollTop = 0;
 }
 
 
