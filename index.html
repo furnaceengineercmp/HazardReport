@@ -2474,10 +2474,19 @@ function driveId(url){
   const m = String(url||'').match(/\/d\/([a-zA-Z0-9_-]+)/) || String(url||'').match(/[?&]id=([a-zA-Z0-9_-]+)/);
   return m ? m[1] : '';
 }
-function imgSrc(url, w){
+// Daftar alamat gambar yang dicoba berurutan (Drive kadang menolak satu jalur
+// saat banyak gambar diminta sekaligus).
+function imgCandidates(url, w){
   const id = driveId(url);
-  return id ? ('https://drive.google.com/thumbnail?id=' + id + '&sz=w' + (w||800)) : String(url||'');
+  w = w || 800;
+  if (!id) return [String(url||'')];
+  return [
+    'https://lh3.googleusercontent.com/d/' + id + '=w' + w,
+    'https://drive.google.com/thumbnail?id=' + id + '&sz=w' + w,
+    'https://drive.google.com/uc?export=view&id=' + id
+  ];
 }
+function imgSrc(url, w){ return imgCandidates(url, w)[0]; }
 function imgOpenUrl(url){
   const id = driveId(url);
   return id ? ('https://drive.google.com/file/d/' + id + '/view') : String(url||'');
@@ -2490,7 +2499,9 @@ function openLightbox(list, idx){
 }
 function showLightbox(){
   const it = LB_LIST[LB_IDX]; if (!it) return;
-  document.getElementById('lbImg').src = imgSrc(it.url, 1600);
+  const lbImg = document.getElementById('lbImg');
+  lbImg._c = imgCandidates(it.url, 1600); lbImg._n = 0;
+  lbImg.src = lbImg._c[0];
   document.getElementById('lbCap').textContent = (it.label || '') + (LB_LIST.length > 1 ? '  (' + (LB_IDX+1) + '/' + LB_LIST.length + ')' : '');
   document.getElementById('lbOpen').href = imgOpenUrl(it.url);
   const multi = LB_LIST.length > 1;
@@ -2498,6 +2509,9 @@ function showLightbox(){
   document.getElementById('lbNext').style.display = multi ? '' : 'none';
 }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); document.getElementById('lbImg').src = ''; }
+document.getElementById('lbImg').addEventListener('error', function(){
+  if (this._c && this._n < this._c.length - 1) { this._n++; this.src = this._c[this._n]; }
+});
 document.getElementById('lbClose').onclick = closeLightbox;
 document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
 document.getElementById('lbPrev').onclick = () => { LB_IDX = (LB_IDX - 1 + LB_LIST.length) % LB_LIST.length; showLightbox(); };
@@ -2517,10 +2531,26 @@ document.addEventListener('click', e => {
 }, true);
 document.addEventListener('error', e => {
   const t = e.target;
-  if (t && t.tagName === 'IMG' && t.classList.contains('lazy-photo')){
-    const d = document.createElement('div'); d.className = 'thumb-fail'; d.textContent = 'Gagal muat';
-    t.replaceWith(d);
+  if (!(t && t.tagName === 'IMG' && t.classList.contains('lazy-photo'))) return;
+  const cands = imgCandidates(t.getAttribute('data-u'), Number(t.getAttribute('data-w')) || 800);
+  const n = Number(t.getAttribute('data-try') || 0);
+  if (n < cands.length - 1) {
+    t.setAttribute('data-try', n + 1);
+    setTimeout(() => { t.src = cands[n + 1]; }, 300 + Math.random() * 900);
+    return;
   }
+  // semua jalur gagal -> tampilkan kotak "coba lagi" yang bisa diklik
+  const d = document.createElement('div');
+  d.className = 'thumb-fail'; d.style.cursor = 'pointer'; d.title = 'Klik untuk coba muat lagi';
+  d.innerHTML = 'Gagal muat<br>↻ coba lagi';
+  const clone = t.cloneNode(false);
+  d.addEventListener('click', ev => {
+    ev.stopPropagation();
+    clone.setAttribute('data-try', 0);
+    clone.src = imgCandidates(clone.getAttribute('data-u'), Number(clone.getAttribute('data-w')) || 800)[0];
+    d.replaceWith(clone);
+  });
+  t.replaceWith(d);
 }, true);
 
 const TYPE_CLASS = { 'Hazard Report':'hazard', 'Safety Talk':'talk', 'Audit SOP':'sop', 'Audit PPE':'ppe' };
@@ -2531,7 +2561,7 @@ function thumbsHtml(photos){
   if (!photos.length) return '<span class="thumb-none">—</span>';
   const lb = encodeURIComponent(JSON.stringify(photos.map(p => ({ url:p.url, label:p.label }))));
   return '<div class="thumb-set">' + photos.map((p, i) =>
-    '<div class="thumb-item"><img class="lazy-photo" loading="lazy" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 200)) + '" data-lb="' + lb + '" data-i="' + i + '" alt="' + escapeHtml(p.label) + '">' +
+    '<div class="thumb-item"><img class="lazy-photo" loading="lazy" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 200)) + '" data-u="' + escapeHtml(p.url) + '" data-w="200" data-lb="' + lb + '" data-i="' + i + '" alt="' + escapeHtml(p.label) + '">' +
     (photos.length > 1 ? '<span class="thumb-cap">' + escapeHtml(p.label) + '</span>' : '') + '</div>'
   ).join('') + '</div>';
 }
@@ -2673,7 +2703,7 @@ function openReportDetail(i, type){
   if (photos.length){
     const lb = encodeURIComponent(JSON.stringify(photos));
     html += '<div class="detail-imgs">' + photos.map((p, k) =>
-      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 800)) + '" data-lb="' + lb + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
+      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 800)) + '" data-u="' + escapeHtml(p.url) + '" data-w="800" data-lb="' + lb + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
     ).join('') + '</div>';
   } else html += '<div class="detail-empty">Tidak ada foto.</div>';
 
@@ -2682,7 +2712,7 @@ function openReportDetail(i, type){
   if (sigs.length){
     const lb2 = encodeURIComponent(JSON.stringify(sigs));
     html += '<div class="detail-imgs sig">' + sigs.map((p, k) =>
-      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 600)) + '" data-lb="' + lb2 + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
+      '<figure><img class="lazy-photo" referrerpolicy="no-referrer" src="' + escapeHtml(imgSrc(p.url, 600)) + '" data-u="' + escapeHtml(p.url) + '" data-w="600" data-lb="' + lb2 + '" data-i="' + k + '"><figcaption>' + escapeHtml(p.label) + '</figcaption></figure>'
     ).join('') + '</div>';
   } else html += '<div class="detail-empty">Tidak ada tanda tangan.</div>';
 
