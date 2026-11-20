@@ -560,6 +560,37 @@
   @media (prefers-reduced-motion: reduce){
     body::before, .bg-blobs i, .hazard-top, .screen.active, .menu-item, .btn-primary::after, .hero-badge, .hero-chips span{animation:none !important;}
   }
+
+  /* ===== Judul panel lebih rapi ===== */
+  .card > h1{display:flex; flex-direction:column; gap:4px; font-size:1.7rem; line-height:1.15; letter-spacing:.01em; padding-bottom:14px; margin:0 0 16px; border-bottom:1px solid var(--line); position:relative;}
+  .card > h1::after{content:""; position:absolute; left:0; bottom:-1px; width:64px; height:3px; border-radius:3px; background:var(--accent);}
+  .card > h1 .en{display:block; margin:0; font-size:.82rem; font-weight:500; font-style:normal; letter-spacing:.04em; color:var(--ink-soft);}
+  @media (max-width:560px){ .card > h1{font-size:1.35rem;} }
+
+  /* ===== Rapor per orang: daftar laporan ===== */
+  .kpi-click{cursor:pointer; position:relative;}
+  .kpi-click::after{content:"Lihat daftar \2192"; position:absolute; right:12px; bottom:10px; font-size:.68rem; font-weight:700; color:var(--ink-soft); opacity:0; transition:opacity .2s;}
+  .kpi-click:hover::after, .kpi-click.sel::after{opacity:1;}
+  .kpi-click.sel{outline:2.5px solid var(--ink); outline-offset:2px;}
+  .person-hint{margin:10px 0 0; font-size:.76rem; color:var(--ink-soft);}
+  .pl-all{display:flex; align-items:center; justify-content:space-between; width:100%; margin-top:12px; padding:12px 16px; border:1.5px dashed var(--ink-soft); border-radius:12px; background:var(--bg); color:var(--ink); font-weight:700; font-size:.88rem; cursor:pointer; transition:transform .15s, background .2s;}
+  .pl-all:hover{transform:translateY(-2px); background:var(--paper);}
+  .pl-all.sel{border-style:solid; border-color:var(--ink);}
+  .pl-box{margin-top:16px; padding:14px; border:1px solid var(--line); border-radius:14px; background:var(--paper); animation:screenIn .35s cubic-bezier(.2,.8,.2,1);}
+  .pl-head{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 12px; margin-bottom:10px;}
+  .pl-title{font-weight:800; font-size:1rem;} .pl-sub{font-size:.76rem; color:var(--ink-soft);}
+  .pl-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
+  .pl-chip{border:1.5px solid var(--line); background:var(--bg); color:var(--ink); border-radius:999px; padding:5px 12px; font-size:.76rem; font-weight:700; cursor:pointer; transition:transform .15s;}
+  .pl-chip:hover{transform:translateY(-1px);}
+  .pl-chip.on{color:#fff; border-color:transparent; background:var(--ink);}
+  .pl-chip.on[data-k=hazard]{background:var(--c-hazard);} .pl-chip.on[data-k=talk]{background:var(--c-talk); color:#111;}
+  .pl-chip.on[data-k=sop]{background:var(--c-sop);} .pl-chip.on[data-k=ppe]{background:var(--c-ppe);}
+  .pl-tools{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin-bottom:10px;}
+  .pl-tools label{display:flex; align-items:center; gap:6px; margin:0; font-size:.78rem; font-weight:600; cursor:pointer;}
+  .pl-tools input[type=checkbox]{width:auto; margin:0; accent-color:var(--accent);}
+  .pl-tools .btn{width:auto; padding:8px 14px; font-size:.8rem; margin-left:auto;}
+  .pl-tools .btn svg{width:15px; height:15px; vertical-align:-3px;}
+  .pl-empty{padding:18px; text-align:center; color:var(--ink-soft); font-size:.85rem;}
 </style>
 </head>
 <body>
@@ -2578,12 +2609,20 @@ function wireDashLookup(data){
       '<div class="lookup-total"><span>Total laporan (periode terpilih)</span><b>' + total + '</b></div>' +
       (match.percent !== null && match.percent !== undefined ? '<div class="lookup-total" style="background:rgba(107,63,160,.12); color:#6b3fa0;"><span>Capaian target</span><b>' + fmtPct(match.percent) + '</b></div>' : '') +
       '<div class="kpi-grid">' +
-        '<div class="kpi-card c-hazard"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
-        '<div class="kpi-card c-talk"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
-        '<div class="kpi-card c-sop"><div class="kpi-label">Audit SOP</div><div class="kpi-value">' + (match.sop||0) + '</div></div>' +
-        '<div class="kpi-card c-ppe"><div class="kpi-label">Audit PPE</div><div class="kpi-value">' + (match.ppe||0) + '</div></div>' +
-      '</div>' + targetHtml;
+        '<div class="kpi-card kpi-click c-hazard" data-k="hazard" tabindex="0" role="button"><div class="kpi-label">Hazard Report</div><div class="kpi-value">' + (match.hazard||0) + '</div></div>' +
+        '<div class="kpi-card kpi-click c-talk" data-k="talk" tabindex="0" role="button"><div class="kpi-label">Safety Talk</div><div class="kpi-value">' + (match.talk||0) + '</div></div>' +
+        '<div class="kpi-card kpi-click c-sop" data-k="sop" tabindex="0" role="button"><div class="kpi-label">Audit SOP</div><div class="kpi-value">' + (match.sop||0) + '</div></div>' +
+        '<div class="kpi-card kpi-click c-ppe" data-k="ppe" tabindex="0" role="button"><div class="kpi-label">Audit PPE</div><div class="kpi-value">' + (match.ppe||0) + '</div></div>' +
+      '</div>' +
+      '<button type="button" class="pl-all" data-k="all"><span>Lihat semua laporan oleh ' + escapeHtml(match.name) + '</span><b>' + total + ' laporan &rarr;</b></button>' +
+      '<p class="person-hint">Klik kartu jenis laporan di atas untuk melihat daftar laporan yang sudah dikirim.</p>' +
+      targetHtml + '<div id="personListBox"></div>';
     resultEl.classList.add('show');
+    resultEl.querySelectorAll('[data-k]').forEach(el => {
+      const go = () => showPersonList(match, data, el.getAttribute('data-k'), mine);
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); go(); } });
+    });
   }
   btn.onclick = doLookup;
   input.onkeydown = (e) => { if (e.key === 'Enter') doLookup(); };
@@ -2851,6 +2890,150 @@ function openReportDetail(i, type){
 }
 
 
+
+
+/* ============================================================================
+ *  RAPOR PER ORANG: DAFTAR LAPORAN + EXPORT PDF
+ * ========================================================================= */
+const PL_TYPES = { hazard:'Hazard Report', talk:'Safety Talk', sop:'Audit SOP', ppe:'Audit PPE' };
+const PL_COLORS = { hazard:'#d2001c', talk:'#e0a100', sop:'#1a7f37', ppe:'#1f6feb' };
+let PL_SHOW_PHOTOS = false;
+
+function showPersonList(match, data, key, mine){
+  const box = document.getElementById('personListBox');
+  if (!box) return;
+  const resultEl = document.getElementById('dashLookupResult');
+  resultEl.querySelectorAll('.kpi-click, .pl-all').forEach(e => e.classList.toggle('sel', e.getAttribute('data-k') === key));
+
+  const mineAll = (data.reportsList || []).filter(r => r.name === match.name);
+  const counts = { all: mineAll.length };
+  Object.keys(PL_TYPES).forEach(k => { counts[k] = mineAll.filter(r => r.type === PL_TYPES[k]).length; });
+
+  function draw(){
+    const rows = key === 'all' ? mineAll : mineAll.filter(r => r.type === PL_TYPES[key]);
+    const label = key === 'all' ? 'Semua Laporan' : PL_TYPES[key];
+    const period = (data.yearFrom === data.yearTo) ? String(data.yearFrom) : (data.yearFrom + '–' + data.yearTo);
+    let html = '<div class="pl-head"><div><div class="pl-title">' + escapeHtml(label) + ' — ' + escapeHtml(match.name) + '</div>' +
+      '<div class="pl-sub">Periode ' + escapeHtml(period) + ' · ' + rows.length + ' laporan</div></div></div>';
+    html += '<div class="pl-chips">' + ['all','hazard','talk','sop','ppe'].map(k =>
+      '<button type="button" class="pl-chip' + (k === key ? ' on' : '') + '" data-k="' + k + '">' + (k === 'all' ? 'Semua' : PL_TYPES[k]) + ' (' + counts[k] + ')</button>').join('') + '</div>';
+    html += '<div class="pl-tools">' +
+      '<button type="button" class="photo-toggle' + (PL_SHOW_PHOTOS ? ' on' : '') + '" id="plPhotoToggle">🖼 ' + (PL_SHOW_PHOTOS ? 'Sembunyikan foto' : 'Tampilkan foto') + '</button>' +
+      '<label><input type="checkbox" id="plPdfPhoto"> Sertakan foto di PDF</label>' +
+      '<button type="button" class="btn btn-primary" id="plPdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg> Export PDF</button></div>';
+    if (!rows.length){
+      html += '<div class="pl-empty">Belum ada laporan ' + (key === 'all' ? '' : escapeHtml(PL_TYPES[key]) + ' ') + 'pada periode ini.</div>';
+    } else {
+      html += '<div class="reports-table-wrap"><table class="reports-table"><thead><tr><th>#</th><th>Tanggal</th><th>Jenis</th><th>Judul / Temuan</th>' + (PL_SHOW_PHOTOS ? '<th>Foto</th>' : '') + '</tr></thead><tbody>' +
+        rows.map((r, i) => {
+          const c = TYPE_CLASS[r.type] || '';
+          return '<tr class="row-' + c + '"><td>' + (i + 1) + '</td><td style="white-space:nowrap;">' + escapeHtml(r.date) + '</td>' +
+            '<td><span class="badge-type b-' + c + '">' + escapeHtml(r.type) + '</span></td><td>' + escapeHtml(r.title) + '</td>' +
+            (PL_SHOW_PHOTOS ? '<td>' + thumbsHtml(r.photos) + '</td>' : '') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    box.innerHTML = '<div class="pl-box">' + html + '</div>';
+    box.querySelectorAll('.pl-chip').forEach(b => b.onclick = () => showPersonList(match, data, b.getAttribute('data-k'), mine));
+    document.getElementById('plPhotoToggle').onclick = () => { PL_SHOW_PHOTOS = !PL_SHOW_PHOTOS; draw(); };
+    document.getElementById('plPdfBtn').onclick = function(){
+      exportPersonPDF(match, data, key, rows, mine, document.getElementById('plPdfPhoto').checked, this);
+    };
+  }
+  draw();
+  box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function openPrintFrame(html, docTitle, btn){
+  const label = btn ? btn.innerHTML : '';
+  if (btn){ btn.disabled = true; btn.textContent = 'Menyiapkan PDF...'; }
+  const restore = () => { if (btn){ btn.disabled = false; btn.innerHTML = label; } };
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed; right:0; bottom:0; width:0; height:0; border:0; visibility:hidden;';
+  document.body.appendChild(iframe);
+  const doc = iframe.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+  const prevTitle = document.title;
+  let waited = 0;
+  const poll = setInterval(() => {
+    waited += 300;
+    const ready = Array.prototype.slice.call(doc.images).every(im => im.complete);
+    if (ready || waited >= 9000){
+      clearInterval(poll);
+      setTimeout(() => {
+        try{ document.title = docTitle; iframe.contentWindow.focus(); iframe.contentWindow.print(); }
+        catch(e){ alert('Gagal membuka dialog cetak: ' + e.message); }
+        document.title = prevTitle; restore();
+        setTimeout(() => { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 60000);
+      }, 250);
+    }
+  }, 300);
+}
+
+function exportPersonPDF(match, data, key, rows, mine, withPhotos, btn){
+  const logo = (document.querySelector('.brand-logo') || {}).src || '';
+  const session = getSession() || {};
+  const label = key === 'all' ? 'Semua Laporan' : PL_TYPES[key];
+  const color = key === 'all' ? '#14171a' : PL_COLORS[key];
+  const period = (data.yearFrom === data.yearTo) ? String(data.yearFrom) : (data.yearFrom + ' - ' + data.yearTo);
+  const total = (match.hazard||0) + (match.talk||0) + (match.sop||0) + (match.ppe||0);
+  const docTitle = 'Rapor ' + label + ' - ' + match.name + ' - ' + period;
+
+  const info = [
+    ['Nama', match.name], ['Jabatan', match.jobTitle || match.role || '-'], ['ID Badges', match.idBadges || '-'],
+    ['Periode', period], ['Total laporan', total],
+    ['Capaian target', (match.percent !== null && match.percent !== undefined) ? fmtPct(match.percent) : '-']
+  ];
+  let body = '<div class="hd"><img class="logo" src="' + escapeHtml(logo) + '"><div class="hd-r"><div class="co">Ceria Metalindo Prima</div><div class="dp">PROCESS PLANT DEPARTMENT</div></div></div><div class="band"></div>';
+  body += '<h1>RAPOR LAPORAN &mdash; ' + escapeHtml(label.toUpperCase()) + '</h1>';
+  body += '<table class="kv">' + info.map(x => '<tr><th>' + escapeHtml(x[0]) + '</th><td>' + escapeHtml(String(x[1])) + '</td></tr>').join('') + '</table>';
+
+  body += '<div class="sum">' + ['hazard','talk','sop','ppe'].map(k =>
+    '<div class="sb" style="border-top-color:' + PL_COLORS[k] + '"><div class="sl">' + PL_TYPES[k] + '</div><div class="sv" style="color:' + PL_COLORS[k] + '">' + (match[k] || 0) + '</div></div>').join('') + '</div>';
+
+  if (mine && mine.length){
+    body += '<h2>Pencapaian Target</h2><table class="kv">' + mine.map(e => {
+      const tgt = e.effectiveTarget != null ? e.effectiveTarget : e.targetPerYear;
+      const pct = tgt > 0 ? Math.min(100, Math.round(e.count / tgt * 100)) : 0;
+      return '<tr><th>' + escapeHtml(e.label || e.metric) + '</th><td>' + e.count + ' / ' + tgt + 'x (' + pct + '%)</td></tr>';
+    }).join('') + '</table>';
+  }
+
+  body += '<h2>Daftar ' + escapeHtml(label) + ' (' + rows.length + ')</h2>';
+  if (!rows.length){
+    body += '<p class="empty">Belum ada laporan pada periode ini.</p>';
+  } else {
+    body += '<table class="lst"><thead><tr><th>#</th><th>Tanggal</th><th>Jenis</th><th>Judul / Temuan</th>' + (withPhotos ? '<th>Foto</th>' : '') + '</tr></thead><tbody>' +
+      rows.map((r, i) => {
+        let ph = '';
+        if (withPhotos){
+          ph = '<td>' + (r.photos || []).filter(p => p && p.url).map(p => {
+            const c = imgCandidates(p.url, 300);
+            return '<img class="th" src="' + escapeHtml(c[0]) + '" data-c="' + escapeHtml(JSON.stringify(c)) + '" data-n="0" referrerpolicy="no-referrer" onerror="nx(this)">';
+          }).join('') + '</td>';
+        }
+        return '<tr><td>' + (i + 1) + '</td><td class="nw">' + escapeHtml(r.date) + '</td><td><span class="tg" style="background:' + (PL_COLORS[{'Hazard Report':'hazard','Safety Talk':'talk','Audit SOP':'sop','Audit PPE':'ppe'}[r.type]] || '#555') + (r.type === 'Safety Talk' ? ';color:#111' : '') + '">' + escapeHtml(r.type) + '</span></td><td>' + escapeHtml(r.title) + '</td>' + ph + '</tr>';
+      }).join('') + '</tbody></table>';
+  }
+  body += '<div class="ft">Dicetak oleh ' + escapeHtml(session.fullName || session.username || '-') + ' pada ' + escapeHtml(new Date().toLocaleString('id-ID')) + ' &middot; Aplikasi HSE &mdash; Ceria Metalindo Prima</div>';
+
+  const css = '@page{size:A4; margin:14mm;} *{box-sizing:border-box;} html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}' +
+    'body{margin:0; font-family:"Segoe UI",Roboto,Arial,sans-serif; font-size:11px; color:#14171a;}' +
+    '.hd{display:flex; align-items:center; justify-content:space-between; gap:14px;} .logo{height:48px; width:auto;}' +
+    '.hd-r{text-align:right;} .co{font-size:17px; font-weight:700;} .dp{font-size:9.5px; letter-spacing:.1em; color:#5b6470;}' +
+    '.band{height:5px; margin:10px 0 14px; background:' + color + '; border-radius:3px;}' +
+    'h1{font-size:17px; margin:0 0 10px; color:' + color + '; letter-spacing:.03em;}' +
+    'h2{font-size:12px; margin:16px 0 8px; padding-bottom:4px; border-bottom:2px solid ' + color + '; text-transform:uppercase; letter-spacing:.05em; page-break-after:avoid;}' +
+    'table{width:100%; border-collapse:collapse;} table.kv th, table.kv td{border:1px solid #d9dde3; padding:6px 9px; text-align:left; vertical-align:top;}' +
+    'table.kv th{width:30%; background:#f3f4f6;}' +
+    '.sum{display:flex; gap:8px; margin-top:12px;} .sb{flex:1; border:1px solid #d9dde3; border-top:4px solid; border-radius:6px; padding:7px 9px;} .sl{font-size:9.5px; text-transform:uppercase; color:#5b6470; letter-spacing:.05em;} .sv{font-size:20px; font-weight:800;}' +
+    'table.lst th, table.lst td{border:1px solid #d9dde3; padding:5px 8px; text-align:left; vertical-align:top; page-break-inside:avoid;} table.lst thead{display:table-header-group;} table.lst th{background:#f3f4f6; font-size:10px; text-transform:uppercase;}' +
+    'table.lst tr:nth-child(even) td{background:#fafbfc;} .nw{white-space:nowrap;} .tg{display:inline-block; color:#fff; font-size:9.5px; font-weight:700; padding:1px 8px; border-radius:99px; white-space:nowrap;}' +
+    'img.th{width:22mm; height:22mm; object-fit:cover; border:1px solid #d9dde3; border-radius:4px; margin:0 3px 3px 0;} .empty{color:#5b6470; font-style:italic;}' +
+    '.ft{margin-top:20px; padding-top:8px; border-top:1px solid #d9dde3; font-size:9.5px; color:#5b6470; text-align:center;}';
+  const html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(docTitle) + '</title><style>' + css + '</style></head><body>' + body +
+    '<script>function nx(i){var c=JSON.parse(i.getAttribute("data-c")),n=+i.getAttribute("data-n")||0;if(n<c.length-1){i.setAttribute("data-n",n+1);i.src=c[n+1];}else{i.style.display="none";}}<\/script></body></html>';
+  openPrintFrame(html, docTitle, btn);
+}
 
 /* ============================================================================
  *  CETAK / SIMPAN PDF LAPORAN (dengan logo perusahaan)
